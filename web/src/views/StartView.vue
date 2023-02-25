@@ -34,7 +34,7 @@
           Scan to join game
         </h1>
         <qrcode-vue
-          :value="`https://vhunter.star-horizon.com/j/${$route.params.id}`"
+          :value="`https://vhunter.star-horizon.com/?c=${$route.params.id}`"
           :size="0.2 * $vssWidth"
           :margin="1"></qrcode-vue>
       </div>

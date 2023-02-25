@@ -10,6 +10,7 @@
   "dependencies": {
     "@vicons/fa": "^0.12.0",
     "firebase": "^9.17.1",
+    "lodash": "^4.17.21",
     "naive-ui": "^2.34.3",
     "qrcode.vue": "^3.3.3",
     "unplugin-auto-import": "^0.14.4",

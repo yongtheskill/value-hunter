@@ -15,7 +15,7 @@
         </n-icon> </template
     ></n-button>
   </div>
-  <n-space vertical>
+  <n-space vertical v-if="admins.length > 0">
     <div
       v-for="admin in admins"
       :key="admin.uid"
@@ -33,12 +33,19 @@
         circle
         type="error"
         @click="deleteUser(admin.uid)"
-        :disabled="admin.uid == user.uid || loadingUIDs[admin.uid]"
+        :disabled="admin.uid == forceUser().uid || loadingUIDs[admin.uid]"
         :loading="loadingUIDs[admin.uid]">
         <template #icon>
           <n-icon><bin-icon /></n-icon> </template
       ></n-button>
     </div>
+  </n-space>
+  <n-space vertical v-else class="fadeOut">
+    <n-skeleton
+      height="54px"
+      width="100%"
+      style="border-radius: var(--border-radius)"
+      v-for="i in Array.from(Array(4).keys())" />
   </n-space>
 
   <modal :show="createUserOpen">
@@ -105,7 +112,8 @@ import {
   TrashBinOutline as BinIcon,
 } from '@vicons/ionicons5';
 import { getFn } from '../utils/functions';
-import { user } from '../utils/auth';
+import { forceUser } from '../utils/auth';
+import _ from 'lodash';
 
 export default {
   data() {
@@ -117,8 +125,8 @@ export default {
       createUserOpen: false,
       loading: false,
       admins: [],
-      user,
       loadingUIDs: {},
+      forceUser,
     };
   },
   computed: {
@@ -130,6 +138,9 @@ export default {
     this.listAdmins();
   },
   methods: {
+    safeGet(obj, path, defaultValue) {
+      return _.get(obj, path, defaultValue);
+    },
     async deleteUser(uid) {
       this.loadingUIDs[uid] = true;
       const deleteAdmin = getFn('deleteUser');
