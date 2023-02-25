@@ -1,13 +1,19 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut as fsignOut } from 'firebase/auth';
 
 var user = null;
-
+let auth = {};
 const registerAuthListener = () => {
-  const auth = getAuth();
+  auth = getAuth();
   const registerAuth = onAuthStateChanged(auth, (u) => {
-    console.log(u);
     user = u;
+    u.getIdTokenResult().then((t) => {
+      console.log(t.claims);
+    });
   });
 };
 
-export { user, registerAuthListener };
+const signOut = async () => {
+  await fsignOut(auth);
+};
+
+export { user, registerAuthListener, signOut };

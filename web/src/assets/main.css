@@ -1,7 +1,14 @@
 @import './base.css';
 
-.n-button {
-  border-radius: var(--border-radius);
+.n-button,
+.n-input__border,
+.n-input__state-border,
+.n-input {
+  border-radius: var(--border-radius) !important;
+}
+
+.n-input-number {
+  width: 100%;
 }
 
 .contrastcard {
@@ -19,4 +26,38 @@
   border-top: 1px solid rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: flex-end;
+}
+
+.bpad {
+  margin-bottom: 1rem;
+}
+
+.floatingCardContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.floatingCard {
+  background-color: var(--color-background-contrast);
+  color: var(--color-text-contrast);
+  border-radius: var(--border-radius);
+  padding: 1rem 2rem;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 300px;
+  width: 400px;
+}
+
+.inputLabel {
+  width: 100%;
+  text-align: start;
+  padding-left: 0.8rem;
+}
+.errorLabel {
+  color: var(--color-error);
+  padding-left: 0.3rem;
 }

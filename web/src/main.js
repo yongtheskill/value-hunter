@@ -16,7 +16,7 @@ const firebaseConfig = {
 const fapp = initializeApp(firebaseConfig);
 const auth = getAuth(fapp);
 const db = getFirestore(fapp);
-export { auth, db };
+export { auth, db, fapp };
 
 registerAuthListener();
 
@@ -25,8 +25,8 @@ import App from './App.vue';
 import router from './router';
 import './assets/main.css';
 
-const app = createApp(App);
+const vapp = createApp(App);
 
-app.use(router);
+vapp.use(router);
 
-app.mount('#app');
+vapp.mount('#app');

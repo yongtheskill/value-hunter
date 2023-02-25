@@ -8,6 +8,9 @@
         <RouterLink to="/manage">Classes</RouterLink>
         <RouterLink to="/manage/users">Users</RouterLink>
         <RouterLink to="/manage/settings">Settings</RouterLink>
+        <n-button secondary type="error" style="margin-left: 1.5rem" @click="logout()"
+          >Log Out</n-button
+        >
       </div>
     </nav>
   </header>
@@ -18,8 +21,15 @@
 
 <script>
 import { RouterView } from 'vue-router';
+import { signOut } from '../utils/auth';
 export default {
   components: [RouterView],
+  methods: {
+    async logout() {
+      await signOut();
+      this.$router.push('/login');
+    },
+  },
 };
 </script>
 
@@ -32,6 +42,11 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
+}
+.navLinks {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 .navLinks a {
   color: var(--color-heading);

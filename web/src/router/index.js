@@ -5,7 +5,6 @@ import { user } from '../utils/auth';
 const adminPages = ['manage', 'manage classes'];
 
 const checkAuthed = () => {
-  console.log(user);
   if (user) return true;
   return false;
 };
@@ -48,6 +47,11 @@ const router = createRouter({
           name: 'settings',
         },
       ],
+    },
+    {
+      path: '/run/:id/s',
+      name: 'starting game',
+      component: () => import('../views/StartView.vue'),
     },
   ],
 });
