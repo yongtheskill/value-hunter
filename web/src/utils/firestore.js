@@ -12,6 +12,7 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  onSnapshot,
 } from 'firebase/firestore';
 
 //when there is an id
@@ -54,6 +55,11 @@ const createCollectionRef = (collection) => {
   return fcollection(db, collection);
 };
 
+const listenQuery = (query, callback) => {
+  const unsubscribe = onSnapshot(query, callback);
+  return unsubscribe;
+};
+
 export {
   db,
   setDoc,
@@ -68,6 +74,7 @@ export {
   serverTimestamp,
   createCollectionRef,
   queryDocs,
+  listenQuery,
 };
 
 /*

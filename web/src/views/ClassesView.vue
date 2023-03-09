@@ -114,6 +114,7 @@
 import { Add as AddIcon, Checkmark as CheckmarkIcon, Close as CloseIcon } from '@vicons/ionicons5';
 import ClassCard from '../components/ClassCard.vue';
 import Modal from '../components/Modal.vue';
+import { forceUser } from '../utils/auth';
 import {
   getDoc,
   setDoc,
@@ -170,10 +171,14 @@ export default {
         }
         await setDoc('classes', newID, {
           name: this.newClassName,
+          ownerID: forceUser().uid,
           nPeriods: this.newClassNPeriods,
           initialBalance: this.newClassInitialBalance,
           shortSelling: this.newClassShortSelling,
           created: serverTimestamp(),
+          nextPeriod: serverTimestamp(),
+          started: false,
+          period: 0,
         });
         this.loadCreate = false;
         this.newClassOpen = false;

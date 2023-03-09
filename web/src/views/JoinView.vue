@@ -25,7 +25,9 @@
               clearable
               pattern="[0-9]*"
               style="width: 200px"
-              :status="valid ? '' : 'error'" />
+              :status="valid ? '' : 'error'"
+              :loading="loadingCode"
+              :disabled="disableFields" />
 
             <div style="padding-left: 0.3rem" v-if="valid">Name</div>
             <n-input
@@ -37,6 +39,8 @@
               maxlength="12"
               show-count
               style="width: 200px"
+              :loading="loadingName"
+              :disabled="disableFields"
               autofocus />
 
             <div
@@ -47,7 +51,12 @@
                 width: 100%;
               "
               class="bpad">
-              <n-button type="success" v-if="valid" :disabled="!joinable" @click="join()">
+              <n-button
+                type="success"
+                v-if="valid"
+                :disabled="!joinable || loadJoin"
+                :loading="loadJoin"
+                @click="join()">
                 Join
               </n-button>
               <div v-show="eMessage != ''" style="color: var(--color-error); font-weight: 700">
@@ -63,10 +72,16 @@
 
 <script>
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDoc, query, queryDocs, where, createCollectionRef } from '../utils/firestore';
+import { getDoc, query, queryDocs, where, createCollectionRef, setDoc } from '../utils/firestore';
+import { registerPlayer, isAdmin } from '@/utils/auth';
+import { useClassStore } from '@/utils/classStore';
 const auth = getAuth();
 
 export default {
+  setup() {
+    const classStore = useClassStore();
+    return { classStore };
+  },
   data() {
     return {
       code: '',
@@ -74,29 +89,47 @@ export default {
       eMessage: '',
       valid: false,
       joinable: false,
+      loadingCode: false,
+      loadingName: false,
+      disableFields: false,
+      targetClass: null,
+      loadJoin: false,
     };
   },
   watch: {
     async code(n) {
       this.valid = false;
-      if (n.length != 4) return;
+      this.loadingCode = true;
+      if (n.length != 4) {
+        this.loadingCode = false;
+        return;
+      }
       const targetClass = await getDoc('classes', n);
       if (!targetClass) {
         this.eMessage = 'Invalid code!';
+        this.loadingCode = false;
         return;
       }
+      this.targetClass = targetClass;
       this.eMessage = '';
       this.valid = true;
+      this.loadingCode = false;
     },
     async name(n) {
       this.joinable = false;
-      if (!this.valid) return;
+      this.loadingName = true;
+      if (!this.valid) {
+        this.loadingName = false;
+        return;
+      }
       if (n.length < 2) {
         this.eMessage = 'Name too short!';
+        this.loadingName = false;
         return;
       }
       if (n.length > 12) {
         this.eMessage = 'Name too long!';
+        this.loadingName = false;
         return;
       }
       const existingPlayer = await queryDocs(
@@ -108,10 +141,12 @@ export default {
       );
       if (!existingPlayer.empty) {
         this.eMessage = 'Name taken!';
+        this.loadingName = false;
         return;
       }
       this.eMessage = '';
       this.joinable = true;
+      this.loadingName = false;
     },
   },
   beforeMount() {
@@ -119,17 +154,45 @@ export default {
     if (loadedCode) {
       this.code = loadedCode;
     }
-    const registerAuth = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    const registerAuth = onAuthStateChanged(auth, async (user) => {
+      if (await isAdmin(user)) {
         this.$router.push('/manage');
       }
     });
   },
   methods: {
-    join() {
-      //create account
-      //update database
-      //switch to start screen
+    async join() {
+      this.disableFields = true;
+      this.loadJoin = true;
+      try {
+        const user = await registerPlayer();
+        const newPlayerData = {
+          name: this.name,
+          classID: this.code,
+          iMoney: this.targetClass.initialBalance,
+          money: this.targetClass.initialBalance,
+          holdings: {},
+          transactions: [
+            {
+              nShares: 1,
+              price: this.targetClass.initialBalance,
+              period: 0,
+              isStock: false,
+              label: 'Starting Money',
+            },
+          ],
+        };
+        await setDoc('players', user.uid, newPlayerData);
+        //init class store
+        await this.classStore.load(this.code);
+
+        //switch to start screen
+        this.$router.push('/p/0');
+      } catch (e) {
+        console.log(e);
+        this.disableFields = false;
+        this.loadJoin = false;
+      }
     },
     numberOnly(v) {
       return !v || /^\d+$/.test(v);

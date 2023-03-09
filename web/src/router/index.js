@@ -1,16 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import { user } from '../utils/auth';
+import { checkAdmin } from '@/utils/auth';
 
 const adminPages = ['manage', 'manage classes'];
 
-const checkAuthed = () => {
-  if (user) return true;
-  return false;
-};
-
-const ensureUnauthed = () => {
-  if (checkAuthed()) {
+const ensureUnauthed = async () => {
+  console.log('ensureUnauthed: ', await checkAuthed());
+  if (await checkAuthed()) {
     return '/manage';
   }
 };
@@ -21,13 +17,11 @@ const router = createRouter({
     {
       path: '/',
       name: 'join',
-      beforeEnter: [ensureUnauthed],
       component: () => import('../views/JoinView.vue'),
     },
     {
       path: '/login',
       name: 'login',
-      beforeEnter: [ensureUnauthed],
       component: () => import('../views/LoginView.vue'),
     },
     {
@@ -49,24 +43,28 @@ const router = createRouter({
       ],
     },
     {
-      path: '/run/:id/s',
-      name: 'starting game',
-      component: () => import('../views/StartView.vue'),
+      path: '/p/0',
+      name: 'intro',
+      component: () => import('../views/IntroView.vue'),
     },
+    //{path: '/p/:p', name:'play'}
+    { path: '/run/:id/s', name: 'start game', component: () => import('../views/StartView.vue') },
+    { path: '/run/:id/c', name: 'run game', component: () => import('../views/ControlView.vue') },
   ],
 });
 
 const canUserAccess = async (to) => {
   if (adminPages.includes(to.name)) {
-    if (user) return true;
-    return false;
+    return await checkAdmin();
   }
   return true;
 };
 
 router.beforeEach(async (to, from) => {
   const canAccess = await canUserAccess(to);
-  if (!canAccess) return '/login';
+  if (!canAccess && to.name != 'login') {
+    return { name: 'login' };
+  }
 });
 
 export default router;

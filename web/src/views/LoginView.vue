@@ -26,6 +26,8 @@
 
 <script>
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { isAdmin } from '@/utils/auth';
+
 const auth = getAuth();
 
 export default {
@@ -37,8 +39,8 @@ export default {
     };
   },
   mounted() {
-    const registerAuth = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    const registerAuth = onAuthStateChanged(auth, async (user) => {
+      if (await isAdmin(user)) {
         this.$router.push('/manage');
       }
     });

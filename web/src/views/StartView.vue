@@ -5,6 +5,12 @@
       @click="$router.back()"
       >Back</n-button
     >
+    <n-button
+      type="success"
+      style="position: fixed; bottom: 1rem; right: 1.2rem; z-index: 9999"
+      @click="$router.push(`/run/${$route.params.id}/c`)"
+      >Start Game</n-button
+    >
     <div
       style="
         width: 100vw;
@@ -74,8 +80,8 @@
     <div style="margin: 3vw 6vw; display: flex; flex-direction: column; align-items: center">
       <h1 style="font-size: 2vw; margin-bottom: 2vw">Players</h1>
       <n-grid x-gap="14" y-gap="14" :cols="6">
-        <n-gi v-for="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
-          <div class="nameDisplay" @click="deletePlayer(i)">
+        <n-gi v-for="player in players">
+          <div class="nameDisplay" @click="deletePlayer(player.uid)">
             <div
               style="
                 background-color: var(--color-background-mute);
@@ -84,7 +90,7 @@
                 justify-content: center;
                 border-radius: var(--border-radius);
               ">
-              <h2 style="font-size: 1.2vw; margin: 0.8vw 1vw">Nameaoeuaoeuaa</h2>
+              <h2 style="font-size: 1.2vw; margin: 0.8vw 1vw">{{ player.name }}</h2>
             </div>
 
             <n-icon
@@ -100,27 +106,47 @@
 </template>
 
 <script>
-import { getDoc } from '../utils/firestore';
+import {
+  createCollectionRef,
+  getDoc,
+  query,
+  where,
+  listenQuery,
+  deleteDoc,
+} from '@/utils/firestore';
 import QrcodeVue from 'qrcode.vue';
 import { VueScreenSizeMixin } from 'vue-screen-size';
-import { ChevronDown as DownIcon, TrashBinOutline as BinIcon } from '@vicons/ionicons5';
+import { ChevronDown as DownIcon, TrashBin as BinIcon } from '@vicons/ionicons5';
 
 export default {
   components: { QrcodeVue, DownIcon, BinIcon },
   mixins: [VueScreenSizeMixin],
+  data() {
+    return { clasData: {}, classID: this.$route.params.id, unsub: {}, players: [] };
+  },
   methods: {
     async fetchGame() {
-      const classID = this.$route.params.id;
-
-      const classData = await getDoc('classes', classID);
-      console.log(classData);
+      this.classData = await getDoc('classes', this.classID);
     },
     async deletePlayer(id) {
-      console.log(id);
+      deleteDoc('players', id);
     },
   },
   beforeMount() {
     this.fetchGame();
+
+    //listen to students
+    const coll = createCollectionRef('players');
+    const q = query(coll, where('classID', '==', this.classID));
+    this.unsub = listenQuery(q, (querySnapshot) => {
+      const players = [];
+      querySnapshot.forEach((doc) => {
+        const newPlayer = doc.data();
+        newPlayer['uid'] = doc.id;
+        players.push(newPlayer);
+      });
+      this.players = players;
+    });
   },
 };
 </script>
