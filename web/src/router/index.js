@@ -43,10 +43,11 @@ const router = createRouter({
       ],
     },
     {
-      path: '/p/0',
+      path: '/p/i',
       name: 'intro',
       component: () => import('../views/IntroView.vue'),
     },
+    { path: '/p/:period', name: 'play', component: () => import('../views/PlayView.vue') },
     //{path: '/p/:p', name:'play'}
     { path: '/run/:id/s', name: 'start game', component: () => import('../views/StartView.vue') },
     { path: '/run/:id/c', name: 'run game', component: () => import('../views/ControlView.vue') },

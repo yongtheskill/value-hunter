@@ -2,7 +2,7 @@
   <header>
     <nav>
       <div>
-        <h1 style="font-weight: 700">Trading Game</h1>
+        <h1 style="font-weight: 700" class="phoneHide">Trading Game</h1>
       </div>
       <div class="navLinks">
         <RouterLink to="/manage">Classes</RouterLink>
@@ -58,5 +58,17 @@ nav {
 }
 main {
   margin: 2rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .phoneHide {
+    display: none;
+  }
+}
+</style>
+
+<style>
+body {
+  overflow-x: hidden;
 }
 </style>

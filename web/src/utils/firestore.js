@@ -12,6 +12,7 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  Timestamp,
   onSnapshot,
 } from 'firebase/firestore';
 
@@ -38,8 +39,14 @@ const getDoc = async (collection, docID) => {
   return false;
 };
 
-const listDocs = async (collection) => {
-  const querySnapshot = await fgetDocs(fcollection(db, collection));
+const listDocs = async (collection, orderByCreated) => {
+  let q = {};
+  if (!!orderByCreated) {
+    q = query(fcollection(db, collection), orderBy('created'));
+  } else {
+    q = fcollection(db, collection);
+  }
+  const querySnapshot = await fgetDocs(q);
   return querySnapshot;
 };
 
@@ -60,6 +67,11 @@ const listenQuery = (query, callback) => {
   return unsubscribe;
 };
 
+const listenDoc = (collection, docID, callback) => {
+  const unsubscribe = onSnapshot(fdoc(db, collection, docID), callback);
+  return unsubscribe;
+};
+
 export {
   db,
   setDoc,
@@ -72,9 +84,11 @@ export {
   deleteDoc,
   orderBy,
   serverTimestamp,
+  Timestamp,
   createCollectionRef,
   queryDocs,
   listenQuery,
+  listenDoc,
 };
 
 /*

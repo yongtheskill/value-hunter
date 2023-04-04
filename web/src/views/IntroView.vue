@@ -11,7 +11,7 @@
     ">
     <div class="slideCardContainer">
       <Transition :name="inc ? 'hslidel' : 'hslider'">
-        <div class="slideCard" v-if="card == 0"><card0 v-model:shown="shown[0]" n="0" /></div>
+        <div v-if="card == 0"><card0 v-model:shown="shown[0]" n="0" /></div>
         <div class="slideCard" v-else-if="card == 1"><card1 v-model:shown="shown[1]" n="1" /></div>
         <div class="slideCard" v-else-if="card == 2"><card2 v-model:shown="shown[2]" n="2" /></div>
       </Transition>
@@ -53,6 +53,10 @@
 </template>
 
 <script>
+import { mapState } from 'pinia';
+import { mapActions } from 'pinia';
+import { useClassStore } from '../utils/classStore';
+
 import { ChevronForward as ForwardArrow, ChevronBack as BackArrow } from '@vicons/ionicons5';
 import Card0 from '@/components/onboardingCards/Card0.vue';
 import Card1 from '@/components/onboardingCards/Card1.vue';
@@ -71,6 +75,28 @@ export default {
     Card0,
     Card1,
     Card2,
+  },
+  computed: {
+    ...mapState(useClassStore, ['started']),
+  },
+  methods: {
+    ...mapActions(useClassStore, ['listen', 'load']),
+  },
+  watch: {
+    started(n) {
+      if (!n) return;
+      this.$router.push('/p/0');
+    },
+  },
+  mounted() {
+    try {
+      this.load();
+    } catch (e) {
+      console.log(e);
+    }
+    if (this.started) {
+      this.$router.push('/p/0');
+    }
   },
 };
 </script>

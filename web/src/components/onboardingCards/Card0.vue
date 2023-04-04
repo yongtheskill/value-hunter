@@ -1,14 +1,18 @@
 <template>
-  <div
-    style="
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    ">
-    <h4 :class="cl">Welcome to...</h4>
-    <h1 :class="cl" style="line-height: normal">Value Hunter!</h1>
+  <div class="slideCard stonksBg" style="backdrop-filter: blur(3px)">
+    <div
+      style="
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      ">
+      <h4 :class="cl">Welcome to...</h4>
+      <h1 :class="cl" style="line-height: normal">Value Hunter!</h1>
+      <h4 :class="cl" style="padding-top: 1rem">Here is a quick intro on how to play</h4>
+    </div>
   </div>
 </template>
 
@@ -38,5 +42,23 @@ export default {
 <style>
 .transp {
   opacity: 0;
+}
+.stonksBg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/stonks.webp');
+  background-size: cover;
+  background-position: right;
+  filter: blur(5px) brightness(50%);
+}
+</style>
+
+<style scoped>
+h1 {
+  font-weight: 700;
 }
 </style>

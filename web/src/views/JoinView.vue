@@ -185,9 +185,10 @@ export default {
         await setDoc('players', user.uid, newPlayerData);
         //init class store
         await this.classStore.load(this.code);
+        this.classStore.listen(this.code);
 
         //switch to start screen
-        this.$router.push('/p/0');
+        this.$router.push('/p/i');
       } catch (e) {
         console.log(e);
         this.disableFields = false;
