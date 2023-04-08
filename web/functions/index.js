@@ -51,7 +51,7 @@ exports.listAdmins = functions
   .region('asia-southeast1')
   .runWith({ memory: '128MB' })
   .https.onCall(async (data, ctx) => {
-    if (!ctx.auth || !ctx.auth.token.admin) {
+    if (!ctx.auth || !ctx.auth.token || !ctx.auth.token.admin) {
       throw new functions.https.HttpsError(
         'failed-precondition',
         'The function must be called by an admin.'

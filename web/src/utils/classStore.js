@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
 import { getDoc, listenDoc } from './firestore';
 
+let unsubscribe = null;
+
 export const useClassStore = defineStore('gclass', {
   state: () => {
     return {
-      id: '',
+      classID: '',
       period: 0,
       nextPeriod: 0,
       initialBalance: 0,
@@ -12,7 +14,6 @@ export const useClassStore = defineStore('gclass', {
       name: '',
       shortSelling: false,
       started: false,
-      unsubscribe: null,
     };
   },
   getters: {
@@ -22,7 +23,6 @@ export const useClassStore = defineStore('gclass', {
   },
   actions: {
     setData(classData) {
-      console.log('class updated');
       this.period = classData.period;
       this.nextPeriod = classData.nextPeriod;
       this.initialBalance = classData.initialBalance;
@@ -32,17 +32,21 @@ export const useClassStore = defineStore('gclass', {
       this.started = classData.started;
     },
     async load(classID) {
-      this.classID = classID;
-      const gottenClass = await getDoc('classes', classID);
+      if (!!classID) {
+        this.classID = classID;
+      }
+      const gottenClass = await getDoc('classes', this.classID);
       this.setData(gottenClass);
     },
     listen(classID) {
-      if (!!this.unsubscribe) {
+      if (!!unsubscribe) {
         if (this.classID == classID) return;
         this.unsubscribe();
       }
-      this.classID = classID;
-      this.unsubscribe = listenDoc('classes', classID, (doc) => {
+      if (!!classID) {
+        this.classID = classID;
+      }
+      unsubscribe = listenDoc('classes', this.classID, (doc) => {
         const gottenClass = doc.data();
         this.setData(gottenClass);
       });

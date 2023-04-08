@@ -74,14 +74,12 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDoc, query, queryDocs, where, createCollectionRef, setDoc } from '../utils/firestore';
 import { registerPlayer, isAdmin } from '@/utils/auth';
-import { useClassStore } from '@/utils/classStore';
+import { mapState } from 'pinia';
+import { mapActions } from 'pinia';
+import { useClassStore } from '../utils/classStore';
 const auth = getAuth();
 
 export default {
-  setup() {
-    const classStore = useClassStore();
-    return { classStore };
-  },
   data() {
     return {
       code: '',
@@ -97,6 +95,9 @@ export default {
     };
   },
   watch: {
+    started(n) {
+      console.log('started: ', n);
+    },
     async code(n) {
       this.valid = false;
       this.loadingCode = true;
@@ -135,7 +136,7 @@ export default {
       const existingPlayer = await queryDocs(
         query(
           createCollectionRef('players'),
-          where('gameID', '==', this.code),
+          where('classID', '==', this.code),
           where('name', '==', this.name)
         )
       );
@@ -159,8 +160,21 @@ export default {
         this.$router.push('/manage');
       }
     });
+    if (this.classID != undefined && this.classID.length == 4) {
+      this.load();
+      this.listen();
+      if (!this.started) {
+        this.$router.push('/p/i');
+        return;
+      }
+      this.$router.push('/p');
+    }
+  },
+  computed: {
+    ...mapState(useClassStore, ['classID', 'started', 'period']),
   },
   methods: {
+    ...mapActions(useClassStore, ['listen', 'load']),
     async join() {
       this.disableFields = true;
       this.loadJoin = true;
@@ -184,11 +198,15 @@ export default {
         };
         await setDoc('players', user.uid, newPlayerData);
         //init class store
-        await this.classStore.load(this.code);
-        this.classStore.listen(this.code);
+        await this.load(this.code);
+        this.listen(this.code);
 
-        //switch to start screen
-        this.$router.push('/p/i');
+        //switch to game screen
+        if (!this.started) {
+          this.$router.push('/p/i');
+          return;
+        }
+        this.$router.push('/p');
       } catch (e) {
         console.log(e);
         this.disableFields = false;

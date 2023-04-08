@@ -77,7 +77,7 @@ export default {
     Card2,
   },
   computed: {
-    ...mapState(useClassStore, ['started']),
+    ...mapState(useClassStore, ['started', 'period']),
   },
   methods: {
     ...mapActions(useClassStore, ['listen', 'load']),
@@ -85,7 +85,7 @@ export default {
   watch: {
     started(n) {
       if (!n) return;
-      this.$router.push('/p/0');
+      this.$router.push('/p');
     },
   },
   mounted() {
@@ -95,7 +95,7 @@ export default {
       console.log(e);
     }
     if (this.started) {
-      this.$router.push('/p/0');
+      this.$router.push('/p');
     }
   },
 };

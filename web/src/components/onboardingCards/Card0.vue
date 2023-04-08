@@ -1,5 +1,5 @@
 <template>
-  <div class="slideCard stonksBg" style="backdrop-filter: blur(3px)">
+  <div class="slideCard stonksBg">
     <div
       style="
         height: 100%;
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+//motion one (motion.dev)
 import { animate, stagger } from 'motion';
 export default {
   props: ['shown', 'n'],
