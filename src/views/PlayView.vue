@@ -7,9 +7,11 @@
       :animated="true"
       style="padding: 1rem; height: 100vh; width: 100vw">
       <n-tab-pane class="tabPane" name="1" :tab="newsTabVnode">
-        <div><news :period="period" /></div
-      ></n-tab-pane>
-      <n-tab-pane class="tabPane" name="2" :tab="tradeTabVnode"> </n-tab-pane>
+        <news :period="period"
+      /></n-tab-pane>
+      <n-tab-pane class="tabPane" name="2" :tab="tradeTabVnode">
+        <trade :periodString="period" />
+      </n-tab-pane>
       <n-tab-pane class="tabPane" name="3" :tab="portfolioTabVnode"> </n-tab-pane>
     </n-tabs>
     <div class="periodTitleBacking"></div>
@@ -24,17 +26,19 @@
 import { mapState } from 'pinia';
 import { mapActions } from 'pinia';
 import { useClassStore } from '../utils/classStore';
+import { getData } from '../utils/dataStore';
 import { animate } from 'motion';
 import { h } from 'vue';
 import newsTabTitle from '../components/tabTitles/NewsTab.vue';
 import tradeTabTitle from '../components/tabTitles/TradeTab.vue';
 import portfolioTabTitle from '../components/tabTitles/PortfolioTab.vue';
-import news from '../components/NewsDisplay.vue';
+import news from '../components/tabs/NewsDisplay.vue';
+import trade from '../components/tabs/TradeDisplay.vue';
 
 export default {
   data() {
     return {
-      currentTab: '1',
+      currentTab: '2',
       newsTabVnode: h(newsTabTitle),
       tradeTabVnode: h(tradeTabTitle),
       portfolioTabVnode: h(portfolioTabTitle),
@@ -62,11 +66,12 @@ export default {
   mounted() {
     this.load();
     this.listen();
-
+    getData();
     this.showTitle();
   },
   components: {
     news,
+    trade,
     newsTabTitle,
     tradeTabTitle,
     portfolioTabTitle,
@@ -78,6 +83,7 @@ export default {
 .tabPane {
   overflow: scroll;
   padding-top: 0 !important;
+  height: calc(100vh - 46px - 3rem);
 }
 
 .periodTitle {

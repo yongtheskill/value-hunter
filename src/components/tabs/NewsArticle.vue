@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { formatStorageUrl } from '../utils/storage';
+import { formatStorageUrl } from '../../utils/storage';
 
 export default {
   props: ['img', 'headline'],

@@ -1,4 +1,7 @@
 <template>
+  <div style="padding: 1.4rem 1.5rem 0 1.5rem; display: flex; justify-content: center">
+    <h1>NEWS</h1>
+  </div>
   <div v-if="loading">
     <div v-for="i in Array(5)">
       <n-skeleton
@@ -20,7 +23,7 @@
 </template>
 
 <script>
-import { getNewsData } from '../utils/dataStore';
+import { getNewsData } from '../../utils/dataStore';
 import NewsItem from './NewsArticle.vue';
 
 export default {

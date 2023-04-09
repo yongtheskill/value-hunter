@@ -41,7 +41,7 @@ export const useClassStore = defineStore('gclass', {
     listen(classID) {
       if (!!unsubscribe) {
         if (this.classID == classID) return;
-        this.unsubscribe();
+        unsubscribe();
       }
       if (!!classID) {
         this.classID = classID;
