@@ -1,18 +1,28 @@
 <template>
-  <div
-    style="
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    ">
-    <h4 :class="cl">Welcome to...</h4>
-    <h1 :class="cl" style="line-height: normal">Value Hunter!</h1>
+  <div class="slideCard newsBg">
+    <div
+      style="
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      ">
+      <h1 :class="cl" style="line-height: normal">News!</h1>
+      <h4 :class="cl" style="padding-top: 1rem">
+        Every in-game week, you will be presented with news articles.
+      </h4>
+      <h4 :class="cl" style="padding-top: 1rem">
+        Read these articles, and predict how the market will react!
+      </h4>
+    </div>
   </div>
 </template>
 
 <script>
+//motion one (motion.dev)
 import { animate, stagger } from 'motion';
 export default {
   props: ['shown', 'n'],
@@ -38,5 +48,23 @@ export default {
 <style>
 .transp {
   opacity: 0;
+}
+.newsBg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/news.webp');
+  background-size: cover;
+  background-position: right;
+  filter: blur(5px) brightness(20%);
+}
+</style>
+
+<style scoped>
+h1 {
+  font-weight: 700;
 }
 </style>

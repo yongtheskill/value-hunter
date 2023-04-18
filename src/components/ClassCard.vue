@@ -1,6 +1,6 @@
 <template>
   <n-config-provider :theme="null">
-    <div class="contrastcard">
+    <div class="contrastcard" :style="{ filter: loading ? 'blur(3px) brightness(50%)' : '' }">
       <div class="maincontent">
         <div
           style="
@@ -17,21 +17,26 @@
         </div>
         <div style="display: flex; justify-content: space-between">
           <div class="cardStat">
-            <h1>3</h1>
-            <h4>Players</h4>
+            <h1>{{ nPlayers }}</h1>
+            <h4>Player{{ nPlayers == 1 ? '' : 's' }}</h4>
           </div>
           <div class="cardStat">
-            <h1>3</h1>
-            <h4>Players</h4>
+            <h1>{{ classData.started ? 'YES' : 'NO' }}</h1>
+            <h4>Started</h4>
           </div>
           <div class="cardStat">
-            <h1>3</h1>
-            <h4>Players</h4>
+            <h1>{{ classData.period }}</h1>
+            <h4>Period</h4>
           </div>
         </div>
       </div>
       <div class="footer">
-        <n-button secondary type="error" @click="deleteClass">
+        <n-button
+          secondary
+          type="error"
+          @click="deleteClass"
+          :loading="loading"
+          :disabled="loading">
           <template #icon>
             <n-icon>
               <bin-icon />
@@ -39,7 +44,7 @@
           </template>
           Delete
         </n-button>
-        <n-button type="success" style="margin-left: 1rem" @click="startGame()">
+        <n-button type="success" style="margin-left: 1rem" @click="startGame()" :disabled="loading">
           <template #icon>
             <n-icon>
               <play-icon />
@@ -140,7 +145,18 @@ import {
   Checkmark as CheckmarkIcon,
   Close as CloseIcon,
 } from '@vicons/ionicons5';
-import { deleteDoc, updateDoc } from '../utils/firestore';
+import {
+  deleteDoc,
+  updateDoc,
+  query,
+  queryDocs,
+  where,
+  createCollectionRef,
+  listenQuery,
+} from '../utils/firestore';
+import { getFn } from '../utils/functions';
+import { formatMoney } from '../utils/format';
+import { useMessage } from 'naive-ui';
 
 export default {
   components: { SettingsIcon, BinIcon, PlayIcon, CheckmarkIcon, CloseIcon },
@@ -165,6 +181,8 @@ export default {
       validateEditClassNPeriods: false,
       validateEditClassInitialBalance: false,
       loadCreate: false,
+      loading: false,
+      nPlayers: 0,
     };
   },
   computed: {
@@ -178,8 +196,24 @@ export default {
       );
     },
   },
+  created() {
+    this.listenPlayers();
+  },
   methods: {
+    formatMoney,
+    listenPlayers() {
+      listenQuery(
+        query(createCollectionRef('players'), where('classID', '==', this.classData.id)),
+        (res) => {
+          this.nPlayers = res.size;
+        }
+      );
+    },
     startGame() {
+      if (this.classData.started) {
+        this.$router.push(`/run/${this.classData.id}/c`);
+        return;
+      }
       this.$router.push(`/run/${this.classData.id}/s`);
     },
     async updateClass() {
@@ -197,9 +231,31 @@ export default {
       }
     },
     async deleteClass() {
-      await deleteDoc('classes', this.classData.id);
+      this.loading = true;
+      window.$message.warning('Deleting class, it will take some time, DO NOT close this tab!', {
+        duration: 8000,
+      });
+      const classId = this.classData.id;
+      await deleteDoc('classes', classId);
+
+      //delete all players
+      const firestorePlayers = await queryDocs(
+        query(createCollectionRef('players'), where('classID', '==', classId))
+      );
+      const playerIds = [];
+      firestorePlayers.forEach((p) => {
+        deleteDoc('players', p.id);
+        playerIds.push(p.id);
+      });
+
+      const deleteUsers = getFn('deleteUsers');
+      await deleteUsers({ uids: playerIds });
+
       this.refetch();
     },
+  },
+  setup() {
+    window.$message = useMessage();
   },
 };
 </script>

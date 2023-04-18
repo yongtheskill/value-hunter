@@ -8,7 +8,7 @@
     <n-button
       type="success"
       style="position: fixed; bottom: 1rem; right: 1.2rem; z-index: 9999"
-      @click="$router.push(`/run/${$route.params.id}/c`)"
+      @click="startGame()"
       >Start Game</n-button
     >
     <div
@@ -113,7 +113,9 @@ import {
   where,
   listenQuery,
   deleteDoc,
-} from '@/utils/firestore';
+  updateDoc,
+  serverTimestamp,
+} from '../utils/firestore';
 import QrcodeVue from 'qrcode.vue';
 import { VueScreenSizeMixin } from 'vue-screen-size';
 import { ChevronDown as DownIcon, TrashBin as BinIcon } from '@vicons/ionicons5';
@@ -125,6 +127,10 @@ export default {
     return { clasData: {}, classID: this.$route.params.id, unsub: {}, players: [] };
   },
   methods: {
+    async startGame() {
+      await updateDoc('classes', this.classID, { started: true, nextPeriod: serverTimestamp() });
+      this.$router.push(`/run/${this.$route.params.id}/c`);
+    },
     async fetchGame() {
       this.classData = await getDoc('classes', this.classID);
     },

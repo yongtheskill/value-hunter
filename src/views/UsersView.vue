@@ -26,8 +26,9 @@
         padding: 0.5rem 1.5rem;
         display: flex;
         justify-content: space-between;
+        align-items: center;
       ">
-      <h3>{{ admin.email }}</h3>
+      <h3 style="padding-bottom: 0.2rem">{{ admin.email }}</h3>
       <n-button
         secondary
         circle

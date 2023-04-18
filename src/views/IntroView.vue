@@ -12,8 +12,9 @@
     <div class="slideCardContainer">
       <Transition :name="inc ? 'hslidel' : 'hslider'">
         <div v-if="card == 0"><card0 v-model:shown="shown[0]" n="0" /></div>
-        <div class="slideCard" v-else-if="card == 1"><card1 v-model:shown="shown[1]" n="1" /></div>
-        <div class="slideCard" v-else-if="card == 2"><card2 v-model:shown="shown[2]" n="2" /></div>
+        <div v-else-if="card == 1"><card1 v-model:shown="shown[1]" n="1" /></div>
+        <div v-else-if="card == 2"><card2 v-model:shown="shown[2]" n="2" /></div>
+        <div v-else-if="card == 3"><card3 v-model:shown="shown[3]" n="3" /></div>
       </Transition>
     </div>
     <div
@@ -43,7 +44,7 @@
         "
         type="success"
         size="large"
-        :disabled="card >= 2"
+        :disabled="card >= 3"
         >Next
         <template #icon
           ><n-icon><forward-arrow /></n-icon> </template
@@ -53,14 +54,14 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useClassStore } from '../utils/classStore';
 
 import { ChevronForward as ForwardArrow, ChevronBack as BackArrow } from '@vicons/ionicons5';
 import Card0 from '@/components/onboardingCards/Card0.vue';
 import Card1 from '@/components/onboardingCards/Card1.vue';
 import Card2 from '@/components/onboardingCards/Card2.vue';
+import Card3 from '@/components/onboardingCards/Card3.vue';
 export default {
   data() {
     return {
@@ -75,6 +76,7 @@ export default {
     Card0,
     Card1,
     Card2,
+    Card3,
   },
   computed: {
     ...mapState(useClassStore, ['started', 'period']),

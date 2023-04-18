@@ -179,6 +179,9 @@ export default {
           nextPeriod: serverTimestamp(),
           started: false,
           period: 0,
+          autoAdvance: false,
+          autoAdvanceMin: 5,
+          autoAdvanceSec: 0,
         });
         this.loadCreate = false;
         this.newClassOpen = false;

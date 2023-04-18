@@ -4,7 +4,7 @@ import { RouterView } from 'vue-router';
 
 <template>
   <n-config-provider :theme="darkTheme">
-    <RouterView />
+    <n-message-provider placement="bottom"> <RouterView /></n-message-provider>
   </n-config-provider>
 </template>
 

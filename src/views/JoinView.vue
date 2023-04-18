@@ -195,6 +195,7 @@ export default {
               label: 'Starting Money',
             },
           ],
+          shortRecords: {},
         };
         await setDoc('players', user.uid, newPlayerData);
         //init class store

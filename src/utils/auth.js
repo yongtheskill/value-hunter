@@ -8,8 +8,16 @@ import { v4 as uuidv4 } from 'uuid';
 
 var user = null;
 const registerAuthListener = () => {
-  const registerAuth = onAuthStateChanged(auth, (u) => {
+  const unsubscribe = onAuthStateChanged(auth, (u) => {
     user = u;
+  });
+};
+
+const waitForAuth = (fn) => {
+  const unsubscribe = onAuthStateChanged(auth, (u) => {
+    if (u) {
+      fn(u);
+    }
   });
 };
 
@@ -40,4 +48,13 @@ const isAdmin = async (user) => {
   return !!idToken.claims.admin;
 };
 
-export { user, registerAuthListener, signOut, forceUser, registerPlayer, checkAdmin, isAdmin };
+export {
+  user,
+  registerAuthListener,
+  signOut,
+  forceUser,
+  registerPlayer,
+  checkAdmin,
+  isAdmin,
+  waitForAuth,
+};

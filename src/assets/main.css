@@ -70,3 +70,11 @@
     to(rgba(0, 0, 0, 0))
   );
 }
+
+.n-collapse-item__header {
+  align-items: stretch !important;
+}
+.n-collapse-item__header-main {
+  display: flex;
+  align-items: center;
+}

@@ -59,7 +59,9 @@
   --color-text-contrast: var(--vt-c-text-light-1);
 
   --color-error: #e88080;
+  --color-error-strong: #c23b22;
   --color-success: #63e2b7;
+  --color-success-strong: #29c057;
   --color-warning: #f2c97d;
 }
 

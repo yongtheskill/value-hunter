@@ -16,7 +16,13 @@
           Invalid credentials
         </div>
 
-        <n-button type="success" class="bpad" style="align-self: flex-end" @click="login()">
+        <n-button
+          type="success"
+          class="bpad"
+          style="align-self: flex-end"
+          @click="login()"
+          :loading="loading"
+          :disabled="loading">
           Log In
         </n-button>
       </n-config-provider>
@@ -36,6 +42,7 @@ export default {
       email: '',
       password: '',
       errored: false,
+      loading: false,
     };
   },
   mounted() {
@@ -47,6 +54,7 @@ export default {
   },
   methods: {
     login() {
+      this.loading = true;
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then((userCredential) => {
           // Signed in
@@ -55,6 +63,7 @@ export default {
         })
         .catch((error) => {
           this.errored = true;
+          this.loading = false;
         });
     },
   },

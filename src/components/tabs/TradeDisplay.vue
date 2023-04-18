@@ -25,16 +25,18 @@
       <n-gi :span="5" style="display: flex; justify-content: flex-end"><div>Chart</div></n-gi>
     </n-grid>
   </div>
-  <div v-show="loading">
+  <div v-if="loading" class="fadeOut">
     <div v-for="i in Array(5)">
-      <n-skeleton
-        height="45px"
-        width="100%"
-        style="border-radius: var(--border-radius-inset1); margin: 1rem 0" />
+      <div style="padding: 0 1.5rem">
+        <n-skeleton
+          height="45px"
+          width="100%"
+          style="border-radius: var(--border-radius-inset1); margin: 1rem 0" />
+      </div>
       <n-divider v-if="i != 5" style="margin: 0" />
     </div>
   </div>
-  <div v-show="!loading" style="display: flex; flex-direction: column">
+  <div else style="display: flex; flex-direction: column">
     <div v-for="(counter, i) in counters" :key="counter.id" @click="openTransaction(counter)">
       <div style="padding: 1rem 1.5rem">
         <n-grid :cols="12">
@@ -59,7 +61,11 @@
                   negativeTrend:
                     counter.priceHistory[period] - counter.priceHistory[period - 1] < 0,
                 }"
-                >{{ formatMoney(counter.priceHistory[period] - counter.priceHistory[period - 1])
+                >{{
+                  formatMoney(
+                    counter.priceHistory[period] - counter.priceHistory[period - 1],
+                    true
+                  )
                 }}<n-icon style="margin-left: 2px"
                   ><up-icon
                     v-if="
@@ -95,7 +101,11 @@
       width: 100%;
       height: 100%;
     ">
-    <transact-counter :counter="transactingCounter" :period="period" :close="closeTransaction" />
+    <transact-counter
+      :counter="transactingCounter"
+      :period="period"
+      :close="closeTransaction"
+      :doShort="doShort" />
   </div>
 </template>
 
@@ -120,7 +130,7 @@ export default {
       transactingCounter: {},
     };
   },
-  props: ['periodString'],
+  props: ['periodString', 'doShort'],
   async beforeMount() {
     this.loadCounters();
   },

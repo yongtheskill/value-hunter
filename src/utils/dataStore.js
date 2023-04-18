@@ -23,7 +23,7 @@ const getCounterList = async () => {
   return counterList;
 };
 
-const getCounterObj = async () => {
+const getCountersObj = async () => {
   await getCounters();
   return counterObj;
 };
@@ -39,4 +39,4 @@ const getData = () => {
   getNewsData();
 };
 
-export { getCounterList, getCounterObj, getNewsData, getData };
+export { getCounterList, getCountersObj, getNewsData, getData };

@@ -2,10 +2,10 @@
   <div style="padding: 1.4rem 1.5rem 0 1.5rem; display: flex; justify-content: center">
     <h1>NEWS</h1>
   </div>
-  <div v-if="loading">
+  <div v-if="loading" style="padding: 1.5rem">
     <div v-for="i in Array(5)">
       <n-skeleton
-        height="250px"
+        height="230px"
         width="100%"
         style="border-radius: var(--border-radius-inset1); margin-bottom: 1rem" />
       <n-divider v-if="i != 4" />
