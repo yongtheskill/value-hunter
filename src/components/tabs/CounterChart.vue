@@ -22,6 +22,8 @@ export default {
     Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement);
 
     new Chart(ctx, {
+      responsive: true,
+      maintainAspectRatio: false,
       type: 'line',
       data: {
         datasets: [

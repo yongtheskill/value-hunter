@@ -1,31 +1,40 @@
 <template>
-  <main style="background-color: var(--color-background-dark)" v-show="period < nPeriods - 1">
-    <n-tabs
-      v-model:value="currentTab"
-      type="segment"
-      size="large"
-      :animated="true"
-      style="padding: 1rem; height: 100vh; width: 100vw">
-      <n-tab-pane class="tabPane" name="1" :tab="newsTabVnode">
-        <news :period="period"
-      /></n-tab-pane>
-      <n-tab-pane class="tabPane" name="2" :tab="tradeTabVnode">
-        <trade :periodString="period" :doShort="shortSelling" />
-      </n-tab-pane>
-      <n-tab-pane class="tabPane" name="3" :tab="portfolioTabVnode">
-        <portfolio :period="period"
-      /></n-tab-pane>
-    </n-tabs>
-    <div class="periodTitleBacking"></div>
-    <div class="periodTitle">
-      <h1>Week {{ period + 1 }}</h1>
-      <h3 class="subtitle">Get ready to trade!</h3>
+  <main
+    style="
+      background-color: var(--color-background-dark);
+      display: flex;
+      justify-content: center;
+      width: 100vw;
+    "
+    v-show="period < nPeriods - 1">
+    <div style="width: min(500px, 100vw)">
+      <n-tabs
+        v-model:value="currentTab"
+        type="segment"
+        size="large"
+        :animated="true"
+        style="padding: 1rem; height: 100vh; width: 100%">
+        <n-tab-pane class="tabPane" name="1" :tab="newsTabVnode">
+          <news :period="period"
+        /></n-tab-pane>
+        <n-tab-pane class="tabPane" name="2" :tab="tradeTabVnode">
+          <trade :periodString="period" :doShort="shortSelling" />
+        </n-tab-pane>
+        <n-tab-pane class="tabPane" name="3" :tab="portfolioTabVnode">
+          <portfolio :period="period"
+        /></n-tab-pane>
+      </n-tabs>
+      <div class="periodTitleBacking"></div>
+      <div class="periodTitle">
+        <h1>Week {{ period + 1 }}</h1>
+        <h3 class="subtitle">Get ready to trade!</h3>
+      </div>
     </div>
   </main>
   <div
     v-show="period == nPeriods - 1"
     style="
-      width: 100vw;
+      width: 100%;
       height: 100vh;
       z-index: 9999;
       background-color: var(--color-background-dark);
@@ -58,8 +67,7 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { mapActions } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { useClassStore } from '../utils/classStore';
 import { getData } from '../utils/dataStore';
 import { animate } from 'motion';
@@ -91,14 +99,17 @@ export default {
       animate(
         '.periodTitleBacking',
         { opacity: [1, 1, 0, 0], 'pointer-events': ['auto', 'auto', 'none', 'none'] },
-        { duration: 7 /*0.1*/, offset: [0, 0.9, 0.91] }
+        { duration: 0.1, offset: [0, 0.9, 0.91] }
+        //{ duration: 7 /*0.1*/, offset: [0, 0.9, 0.91] },
       );
       animate(
         '.periodTitle',
         { opacity: [0, 1, 1, 0] },
-        { duration: /*0.1*/ 7, offset: [0, 0.01, 0.95] }
+        { duration: 0.1, offset: [0, 0.01, 0.95] }
+        //{ duration: /*0.1*/ 7, offset: [0, 0.01, 0.95] },
       );
-      animate('.subtitle', { opacity: [0, 1] }, { duration: 0.8 /*0.1*/, delay: /*0*/ 0.8 });
+      animate('.subtitle', { opacity: [0, 1] }, { duration: 0.1, delay: 0 });
+      //animate('.subtitle', { opacity: [0, 1] }, { duration: 0.8 /*0.1*/, delay: /*0*/ 0.8 });
     },
   },
   mounted() {
@@ -128,11 +139,14 @@ export default {
 
 <style>
 .tabPane {
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   padding-top: 0 !important;
   height: calc(100vh - 46px - 3rem);
 }
-
+.n-tabs-pane-wrapper {
+  overflow-y: hidden !important;
+}
 .periodTitle {
   pointer-events: none;
   display: flex;

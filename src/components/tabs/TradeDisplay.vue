@@ -37,7 +37,11 @@
     </div>
   </div>
   <div else style="display: flex; flex-direction: column">
-    <div v-for="(counter, i) in counters" :key="counter.id" @click="openTransaction(counter)">
+    <div
+      v-for="(counter, i) in counters"
+      :key="counter.id"
+      @click="openTransaction(counter)"
+      style="cursor: pointer">
       <div style="padding: 1rem 1.5rem">
         <n-grid :cols="12">
           <n-gi :span="5"

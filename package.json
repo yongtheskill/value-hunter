@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "fn": "firebase deploy --only functions",
+    "web": "firebase deploy --only hosting",
     "build": "vite build",
     "preview": "vite preview"
   },

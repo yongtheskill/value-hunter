@@ -43,6 +43,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in historicalFinancials"
+                        :default-value="data.quarterlyRevenue"
                         @update:value="(e) => financialChanged(e, 'quarterlyRevenue', i, true)" />
                     </n-gi>
                     <n-gi>
@@ -50,6 +51,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in historicalFinancials"
+                        :default-value="data.ebit"
                         @update:value="(e) => financialChanged(e, 'ebit', i, true)" />
                     </n-gi>
                     <n-gi>
@@ -57,13 +59,17 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in historicalFinancials"
-                        @update:value="(e) => financialChanged(e, 'profitMargin', i, true)" />
+                        :default-value="data.profitMargin"
+                        @update:value="(e) => financialChanged(e, 'profitMargin', i, true)"
+                        ><template #suffix>%</template></n-input-number
+                      >
                     </n-gi>
                     <n-gi>
                       <h4 class="rowNumberLabel">PE Ratio</h4>
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in historicalFinancials"
+                        :default-value="data.peRatio"
                         @update:value="(e) => financialChanged(e, 'peRatio', i, true)" />
                     </n-gi>
                     <n-gi>
@@ -71,6 +77,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in historicalFinancials"
+                        :default-value="data.cash"
                         @update:value="(e) => financialChanged(e, 'cash', i, true)" />
                     </n-gi>
                     <n-gi>
@@ -78,6 +85,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in historicalFinancials"
+                        :default-value="data.debt"
                         @update:value="(e) => financialChanged(e, 'debt', i, true)" /> </n-gi
                   ></n-grid>
                   <div>
@@ -106,6 +114,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in gameFinancials"
+                        :default-value="data.quarterlyRevenue"
                         @update:value="(e) => financialChanged(e, 'quarterlyRevenue', i, false)" />
                     </n-gi>
                     <n-gi>
@@ -113,6 +122,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in gameFinancials"
+                        :default-value="data.ebit"
                         @update:value="(e) => financialChanged(e, 'ebit', i, false)" />
                     </n-gi>
                     <n-gi>
@@ -120,13 +130,17 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in gameFinancials"
-                        @update:value="(e) => financialChanged(e, 'profitMargin', i, false)" />
+                        :default-value="data.profitMargin"
+                        @update:value="(e) => financialChanged(e, 'profitMargin', i, false)"
+                        ><template #suffix>%</template></n-input-number
+                      >
                     </n-gi>
                     <n-gi>
                       <h4 class="rowNumberLabel">PE Ratio</h4>
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in gameFinancials"
+                        :default-value="data.peRatio"
                         @update:value="(e) => financialChanged(e, 'peRatio', i, false)" />
                     </n-gi>
                     <n-gi>
@@ -134,6 +148,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in gameFinancials"
+                        :default-value="data.cash"
                         @update:value="(e) => financialChanged(e, 'cash', i, false)" />
                     </n-gi>
                     <n-gi>
@@ -141,6 +156,7 @@
                       <n-input-number
                         class="rowNumberInput"
                         v-for="(data, i) in gameFinancials"
+                        :default-value="data.debt"
                         @update:value="(e) => financialChanged(e, 'debt', i, false)" /> </n-gi
                   ></n-grid>
                   <div>
@@ -222,17 +238,18 @@ export default {
     const gFinancials = [];
     for (const i in this.counter.financials) {
       const data = this.counter.financials[i];
-      data[period] = i;
+      data['period'] = i;
       if (i < 0) {
         hFinancials.push(data);
         continue;
       }
-      gFinanhFinancials.push(data);
+      gFinancials.push(data);
     }
     hFinancials.sort((a, b) => a.period - b.period);
     gFinancials.sort((a, b) => b.period - a.period);
 
-    console.log(hFinancials);
+    this.historicalFinancials = hFinancials;
+    this.gameFinancials = gFinancials;
   },
   methods: {
     financialChanged(e, financial, period, isHistory) {
@@ -259,9 +276,8 @@ export default {
         newData[i - this.historicalFinancials.length] = this.historicalFinancials[i];
       }
       for (let i = 0; i < this.gameFinancials.length; i++) {
-        newData[i] = this.gameFinancials[i].n;
+        newData[i] = this.gameFinancials[i];
       }
-      console.log(newData);
       updateDoc('counters', this.cid, { financials: newData });
     },
     createRecord() {
@@ -284,7 +300,7 @@ export default {
           for (let i = 0; i < ld; i++)
             this.historicalFinancials.push({
               quarterlyRevenue: 0,
-              EBIT: 0,
+              ebit: 0,
               profitMargin: 0,
               peRatio: 0,
               cash: 0,
@@ -299,7 +315,22 @@ export default {
       deep: true,
     },
     gameData: {
-      handler() {
+      handler(n) {
+        const ld = n.length - this.gameFinancials.length;
+        if (ld > 0) {
+          for (let i = 0; i < ld; i++)
+            this.gameFinancials.push({
+              quarterlyRevenue: 0,
+              ebit: 0,
+              profitMargin: 0,
+              peRatio: 0,
+              cash: 0,
+              debt: 0,
+            });
+        }
+        if (ld < 0) {
+          for (let i = Math.abs(ld); i > 0; i--) this.gameFinancials.pop();
+        }
         this.syncData();
       },
       deep: true,

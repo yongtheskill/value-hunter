@@ -38,6 +38,45 @@
     <canvas ref="chart"></canvas>
   </div>
 
+  <div style="padding: 1.5rem 1.5rem 0rem 1.5rem; width: 100%">
+    <n-collapse
+      style="
+        background-color: var(--color-background-soft);
+        border-radius: var(--border-radius);
+        padding: 0.5rem 1rem;
+      ">
+      <n-collapse-item title="Financials" name="1">
+        <div style="display: flex">
+          <div style="width: 135px; flex-shrink: 0; display: inline-block" class="stripe">
+            <div class="headerrow">Period</div>
+            <div class="headerrow">Quarterly Revenue</div>
+            <div class="headerrow">EBIT</div>
+            <div class="headerrow">Profit Margin</div>
+            <div class="headerrow">PE Ratio</div>
+            <div class="headerrow">Cash</div>
+            <div class="headerrow">Debt</div>
+          </div>
+          <div style="overflow-x: auto; display: inline-block">
+            <div class="scrollContainer">
+              <div
+                class="tcol stripe"
+                v-for="periodFinancial in financials"
+                :key="periodFinancial.period">
+                <div class="trow">{{ periodFinancial.period }}</div>
+                <div class="trow">{{ periodFinancial.quarterlyRevenue }}</div>
+                <div class="trow">{{ periodFinancial.ebit }}</div>
+                <div class="trow">{{ periodFinancial.profitMargin }}%</div>
+                <div class="trow">{{ periodFinancial.peRatio }}</div>
+                <div class="trow">{{ periodFinancial.cash }}</div>
+                <div class="trow">{{ periodFinancial.debt }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </n-collapse-item>
+    </n-collapse>
+  </div>
+
   <n-radio-group
     v-model:value="action"
     style="width: 100%; padding: 1.8rem 1.5rem 1rem 1.5rem; display: flex; z-index: 9999">
@@ -205,6 +244,7 @@
       </n-grid>
     </div>
   </div>
+  <div style="padding-bottom: 0.5rem; width: 1rem">&nbsp;</div>
 </template>
 
 <script>
@@ -247,6 +287,22 @@ export default {
     };
   },
   computed: {
+    financials() {
+      if (!this.counter.financials) return;
+      const keys = Object.keys(this.counter.financials);
+      for (let i = 0; i < keys.length; i++) {
+        keys[i] = Number(keys[i]);
+      }
+      keys.sort();
+      console.log(keys);
+      const final = [];
+      for (const key of keys) {
+        const data = this.counter.financials[key.toString()];
+        data['period'] = key;
+        final.push(data);
+      }
+      return final;
+    },
     //sell
     availableQty() {
       if (!this.playerData.money) return 0;
@@ -499,6 +555,8 @@ export default {
     Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement);
 
     new Chart(ctx, {
+      maintainAspectRatio: false,
+
       type: 'line',
       data: {
         datasets: [
@@ -549,6 +607,33 @@ export default {
 </script>
 
 <style>
+.tcol {
+  width: 65px;
+}
+.headerrow {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+.trow {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.stripe .trow:nth-child(even) {
+  background-color: var(--color-background-mute);
+}
+.scrollContainer {
+  white-space: nowrap;
+}
+.scrollContainer .tcol {
+  display: inline-block;
+}
+
 .n-radio-button {
   flex-grow: 1;
 }
