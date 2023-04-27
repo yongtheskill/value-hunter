@@ -36,35 +36,131 @@
               </div>
               <div>
                 <h3>Historical Data</h3>
-                <n-dynamic-input
-                  v-model:value="historicalData"
-                  placeholder="Value"
-                  :min="1"
-                  style="width: 220px; margin-top: 0.4rem"
-                  :on-create="createRecord">
-                  <template #default="{ value }">
-                    <n-input-number
-                      v-model:value="value.n"
-                      style="margin-right: 12px; width: 160px">
-                      <template #prefix> $ </template></n-input-number
-                    >
-                  </template>
-                </n-dynamic-input>
+                <div style="display: flex">
+                  <n-grid :cols="6" :x-gap="12" style="padding-right: 12px">
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Quarterly Revenue</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in historicalFinancials"
+                        @update:value="(e) => financialChanged(e, 'quarterlyRevenue', i, true)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">EBIT</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in historicalFinancials"
+                        @update:value="(e) => financialChanged(e, 'ebit', i, true)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Profit Margin</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in historicalFinancials"
+                        @update:value="(e) => financialChanged(e, 'profitMargin', i, true)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">PE Ratio</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in historicalFinancials"
+                        @update:value="(e) => financialChanged(e, 'peRatio', i, true)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Cash</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in historicalFinancials"
+                        @update:value="(e) => financialChanged(e, 'cash', i, true)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Debt</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in historicalFinancials"
+                        @update:value="(e) => financialChanged(e, 'debt', i, true)" /> </n-gi
+                  ></n-grid>
+                  <div>
+                    <h4 style="font-weight: 700">Price</h4>
+                    <n-dynamic-input
+                      v-model:value="historicalData"
+                      placeholder="Value"
+                      :min="1"
+                      style="width: 220px; margin-top: 0.4rem"
+                      :on-create="createRecord">
+                      <template #default="{ value }">
+                        <n-input-number
+                          v-model:value="value.n"
+                          style="margin-right: 12px; width: 160px">
+                          <template #prefix> $ </template></n-input-number
+                        >
+                      </template>
+                    </n-dynamic-input>
+                  </div>
+                </div>
                 <h3 style="margin-top: 1.4rem">Game Period Data</h3>
-                <n-dynamic-input
-                  v-model:value="gameData"
-                  placeholder="Value"
-                  :min="1"
-                  style="width: 220px; margin-top: 0.4rem"
-                  :on-create="createRecord">
-                  <template #default="{ value }">
-                    <n-input-number
-                      v-model:value="value.n"
-                      style="margin-right: 12px; width: 160px">
-                      <template #prefix> $ </template></n-input-number
-                    >
-                  </template>
-                </n-dynamic-input>
+                <div style="display: flex">
+                  <n-grid :cols="6" :x-gap="12" style="padding-right: 12px">
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Quarterly Revenue</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in gameFinancials"
+                        @update:value="(e) => financialChanged(e, 'quarterlyRevenue', i, false)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">EBIT</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in gameFinancials"
+                        @update:value="(e) => financialChanged(e, 'ebit', i, false)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Profit Margin</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in gameFinancials"
+                        @update:value="(e) => financialChanged(e, 'profitMargin', i, false)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">PE Ratio</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in gameFinancials"
+                        @update:value="(e) => financialChanged(e, 'peRatio', i, false)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Cash</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in gameFinancials"
+                        @update:value="(e) => financialChanged(e, 'cash', i, false)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Debt</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in gameFinancials"
+                        @update:value="(e) => financialChanged(e, 'debt', i, false)" /> </n-gi
+                  ></n-grid>
+                  <div>
+                    <h4 style="font-weight: 700">Price</h4>
+                    <n-dynamic-input
+                      v-model:value="gameData"
+                      placeholder="Value"
+                      :min="1"
+                      style="width: 220px; margin-top: 0.4rem"
+                      :on-create="createRecord">
+                      <template #default="{ value }">
+                        <n-input-number
+                          v-model:value="value.n"
+                          style="margin-right: 12px; width: 160px">
+                          <template #prefix> $ </template></n-input-number
+                        >
+                      </template>
+                    </n-dynamic-input>
+                  </div>
+                </div>
               </div>
             </div>
           </n-collapse-item>
@@ -84,6 +180,8 @@ export default {
   data() {
     return {
       historicalData: [],
+      historicalFinancials: [],
+      gameFinancials: [],
       gameData: [],
       counterName: '',
       stockSymbol: '',
@@ -118,8 +216,33 @@ export default {
     });
     this.historicalData = hdata;
     this.gameData = gdata;
+
+    //parse financials into historical and game financials
+    const hFinancials = [];
+    const gFinancials = [];
+    for (const i in this.counter.financials) {
+      const data = this.counter.financials[i];
+      data[period] = i;
+      if (i < 0) {
+        hFinancials.push(data);
+        continue;
+      }
+      gFinanhFinancials.push(data);
+    }
+    hFinancials.sort((a, b) => a.period - b.period);
+    gFinancials.sort((a, b) => b.period - a.period);
+
+    console.log(hFinancials);
   },
   methods: {
+    financialChanged(e, financial, period, isHistory) {
+      if (isHistory) {
+        this.historicalFinancials[period][financial] = e;
+      } else {
+        this.gameFinancials[period][financial] = e;
+      }
+      this.syncFinancials();
+    },
     syncData() {
       const newData = {};
       for (let i = 0; i < this.historicalData.length; i++) {
@@ -129,6 +252,17 @@ export default {
         newData[i] = this.gameData[i].n;
       }
       updateDoc('counters', this.cid, { priceHistory: newData });
+    },
+    syncFinancials() {
+      const newData = {};
+      for (let i = 0; i < this.historicalFinancials.length; i++) {
+        newData[i - this.historicalFinancials.length] = this.historicalFinancials[i];
+      }
+      for (let i = 0; i < this.gameFinancials.length; i++) {
+        newData[i] = this.gameFinancials[i].n;
+      }
+      console.log(newData);
+      updateDoc('counters', this.cid, { financials: newData });
     },
     createRecord() {
       return {
@@ -144,7 +278,22 @@ export default {
 
   watch: {
     historicalData: {
-      handler() {
+      handler(n) {
+        const ld = n.length - this.historicalFinancials.length;
+        if (ld > 0) {
+          for (let i = 0; i < ld; i++)
+            this.historicalFinancials.push({
+              quarterlyRevenue: 0,
+              EBIT: 0,
+              profitMargin: 0,
+              peRatio: 0,
+              cash: 0,
+              debt: 0,
+            });
+        }
+        if (ld < 0) {
+          for (let i = Math.abs(ld); i > 0; i--) this.historicalFinancials.pop();
+        }
         this.syncData();
       },
       deep: true,
@@ -182,5 +331,12 @@ export default {
     calc(100% - 6.5px) calc(100% - 15px),
     calc(100% - 6.5px) 0
   );
+}
+.rowNumberInput {
+  margin-bottom: 10px;
+}
+.rowNumberLabel {
+  margin-bottom: 0.4rem;
+  font-weight: 700;
 }
 </style>

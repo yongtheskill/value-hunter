@@ -132,7 +132,8 @@
         ><span>Total Value Shorted</span>
         <h2 style="font-weight: 600">{{ formatMoney(totalShortedValue) }}</h2>
         <span style="font-size: 0.6rem"
-          ><n-icon style="margin-right: 2px"><info-icon /></n-icon>Max. $100,000</span
+          ><n-icon style="margin-right: 2px"><info-icon /></n-icon>Max.
+          {{ formatMoney(this.playerData.money * 2) }}</span
         ></n-gi
       >
     </n-grid>
@@ -267,7 +268,10 @@ export default {
     },
     //short
     maxShort() {
-      return Math.floor((100000 - this.totalShortedValue) / this.counter.priceHistory[this.period]);
+      return Math.floor(
+        (this.playerData.money * 2 - this.totalShortedValue) /
+          this.counter.priceHistory[this.period]
+      );
     },
     shortTotal() {
       return this.shortCount * this.counter.priceHistory[this.period];

@@ -106,19 +106,30 @@
         :status="editClassInitialBalance == null && validateEditClassInitialBalance ? 'error' : ''">
         <template #prefix> $ </template></n-input-number
       >
+      <span class="inputLabel" v-if="editClassShortSelling"
+        >Holding Cost
+        <span class="errorLabel" v-if="editClassHoldingCost == null && validateEditClassHoldingCost"
+          >*required</span
+        ></span
+      >
+      <n-input-number
+        v-if="editClassShortSelling"
+        :disabled="loadCreate"
+        size="large"
+        placeholder="Holding Cost"
+        class="bpad"
+        v-model:value="editClassHoldingCost"
+        :min="0"
+        :step="0.1"
+        @blur="validateEditClassHoldingCost = true"
+        :status="editClassHoldingCost == null && validateEditClassHoldingCost ? 'error' : ''">
+        <template #suffix> % </template></n-input-number
+      >
       <div style="width: 100%; display: flex; align-items: flex-start">
         <span style="margin-left: 0.9rem; margin-right: 1rem">Short Selling</span>
         <n-switch :disabled="loadCreate" v-model:value="editClassShortSelling" size="large" />
       </div>
       <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 1rem">
-        <n-button secondary type="error" @click="editClassOpen = false">
-          <template #icon>
-            <n-icon>
-              <close-icon />
-            </n-icon>
-          </template>
-          Cancel
-        </n-button>
         <n-button
           type="success"
           style="margin-left: 1rem"
@@ -130,7 +141,7 @@
               <checkmark-icon />
             </n-icon>
           </template>
-          Update
+          Done
         </n-button>
       </div>
     </modal>
@@ -169,6 +180,7 @@ export default {
     this.editClassNPeriods = this.classData.nPeriods;
     this.editClassInitialBalance = this.classData.initialBalance;
     this.editClassShortSelling = this.classData.shortSelling;
+    this.editClassHoldingCost = this.classData.holdingCost;
   },
   data() {
     return {
@@ -177,9 +189,11 @@ export default {
       editClassNPeriods: 8,
       editClassInitialBalance: 5000,
       editClassShortSelling: false,
+      editClassHoldingCost: 2,
       validateEditClassName: false,
       validateEditClassNPeriods: false,
       validateEditClassInitialBalance: false,
+      validateEditClassHoldingCost: false,
       loadCreate: false,
       loading: false,
       nPlayers: 0,
@@ -192,7 +206,8 @@ export default {
         this.editClassNPeriods == null ||
         this.editClassInitialBalance == null ||
         this.editClassNPeriods < 1 ||
-        this.editClassInitialBalance < 10
+        this.editClassInitialBalance < 10 ||
+        this.editClassHoldingCost < 0
       );
     },
   },
@@ -224,6 +239,7 @@ export default {
           nPeriods: this.editClassNPeriods,
           initialBalance: this.editClassInitialBalance,
           shortSelling: this.editClassShortSelling,
+          holdingCost: this.editClassHoldingCost,
         });
         this.loadCreate = false;
         this.editClassOpen = false;

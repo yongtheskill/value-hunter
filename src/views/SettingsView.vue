@@ -34,6 +34,22 @@
       :status="initialBalance == null && dataLoaded ? 'error' : ''">
       <template #prefix> $ </template></n-input-number
     >
+    <span class="inputLabel"
+      >Holding Cost (%)
+      <span class="errorLabel" v-if="holdingCost == null && dataLoaded">*required</span></span
+    >
+    <n-input-number
+      :loading="!dataLoaded"
+      :disabled="!dataLoaded"
+      size="large"
+      placeholder="Short Holding Cost"
+      class="bpad"
+      v-model:value="holdingCost"
+      :min="0"
+      :step="0.1"
+      :status="holdingCost == null && dataLoaded ? 'error' : ''">
+      <template #suffix> % </template></n-input-number
+    >
     <div style="width: 100%; display: flex; align-items: flex-start">
       <span style="padding-left: 0.3rem; margin-right: 1rem">Short Selling</span>
       <n-switch
@@ -106,6 +122,7 @@ export default {
       countersLoading: false,
       newsPeriods: [],
       newsPeriodsLoading: false,
+      holdingCost: 2,
     };
   },
   watch: {
@@ -117,6 +134,9 @@ export default {
     },
     shortSelling(n) {
       updateDoc('settings', '0', { shortSelling: this.shortSelling });
+    },
+    holdingCost(n) {
+      updateDoc('settings', '0', { holdingCost: this.holdingCost });
     },
   },
   methods: {
@@ -192,6 +212,7 @@ export default {
       this.nPeriods = settings.nPeriods;
       this.initialBalance = settings.initialBalance;
       this.shortSelling = settings.shortSelling;
+      this.holdingCost = settings.holdingCost;
       this.dataLoaded = true;
     },
     async loadCounters() {

@@ -72,6 +72,25 @@
       :status="newClassInitialBalance == null && validateNewClassInitialBalance ? 'error' : ''">
       <template #prefix> $ </template></n-input-number
     >
+    <span class="inputLabel" v-if="newClassShortSelling"
+      >Holding Cost
+      <span class="errorLabel" v-if="newClassHoldingCost == null && validateNewClassHoldingCost"
+        >*required</span
+      ></span
+    >
+    <n-input-number
+      v-if="newClassShortSelling"
+      :disabled="loadCreate"
+      size="large"
+      placeholder="Holding Cost"
+      class="bpad"
+      v-model:value="newClassHoldingCost"
+      :min="0"
+      :step="0.1"
+      @blur="validateNewClassHoldingCost = true"
+      :status="newClassHoldingCost == null && validateNewClassHoldingCost ? 'error' : ''">
+      <template #suffix> % </template></n-input-number
+    >
     <div style="width: 100%; display: flex; align-items: flex-start">
       <span style="margin-left: 0.9rem; margin-right: 1rem">Short Selling</span>
       <n-switch :disabled="loadCreate" v-model:value="newClassShortSelling" size="large" />
@@ -134,9 +153,11 @@ export default {
       newClassNPeriods: 8,
       newClassInitialBalance: 5000,
       newClassShortSelling: false,
+      newClassHoldingCost: 2,
       validateNewClassName: false,
       validateNewClassNPeriods: false,
       validateNewClassInitialBalance: false,
+      validateNewClassHoldingCost: false,
       loadCreate: false,
       classData: [],
     };
@@ -148,7 +169,8 @@ export default {
         this.newClassNPeriods == null ||
         this.newClassInitialBalance == null ||
         this.newClassNPeriods < 1 ||
-        this.newClassInitialBalance < 10
+        this.newClassInitialBalance < 10 ||
+        this.newClassHoldingCost < 0
       );
     },
   },
@@ -165,8 +187,8 @@ export default {
     async createClass() {
       if (this.formValid) {
         this.loadCreate = true;
-        var newID = String(Math.floor(Math.random() * 9999)).padStart(4, '0');
-        while ((await getDoc('classes', newID)) != false) {
+        let newID = String(Math.floor(Math.random() * 9999)).padStart(4, '0');
+        while (await getDoc('classes', newID)) {
           newID = String(Math.floor(Math.random() * 9999)).padStart(4, '0');
         }
         await setDoc('classes', newID, {
@@ -182,6 +204,7 @@ export default {
           autoAdvance: false,
           autoAdvanceMin: 5,
           autoAdvanceSec: 0,
+          holdingCost: this.newClassHoldingCost,
         });
         this.loadCreate = false;
         this.newClassOpen = false;
@@ -197,9 +220,11 @@ export default {
       this.newClassNPeriods = settings.nPeriods;
       this.newClassInitialBalance = settings.initialBalance;
       this.newClassShortSelling = settings.shortSelling;
+      this.newClassHoldingCost = settings.holdingCost;
       this.validateNewClassName = false;
       this.validateNewClassNPeriods = false;
       this.validateNewClassInitialBalance = false;
+      this.validateNewClassHoldingCost = false;
     },
   },
   async beforeMount() {

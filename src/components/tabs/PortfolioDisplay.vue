@@ -9,14 +9,22 @@
       border-radius: var(--border-radius);
     ">
     <div style="padding: 0.8rem 1rem 0.5rem 1rem; border-bottom: 1px solid #fff1">
-      <span>Total Holdings Value</span>
+      <span>Total Value</span>
       <h1 style="padding-bottom: 0.2rem">{{ formatMoney(totalValue) }}</h1>
     </div>
 
     <div style="padding: 0.3rem 1rem 0.8rem 1rem">
       <div class="nrow">
-        <div>Investment Amount</div>
-        <div>{{ formatMoney(totalInvested) }}</div>
+        <div>Stocks</div>
+        <div>{{ formatMoney(stocksValue) }}</div>
+      </div>
+      <div class="nrow">
+        <div>Short Value</div>
+        <div>{{ formatMoney(shortValue) }}</div>
+      </div>
+      <div class="nrow">
+        <div>Cash</div>
+        <div>{{ formatMoney(player.money) }}</div>
       </div>
       <div class="nrow">
         <div>Profit/Loss</div>
@@ -29,45 +37,6 @@
           {{ formatMoney(totalDiff, true) }}
           <n-icon style="padding-left: 4px"
             ><downIcon v-if="totalDiff < 0" /><upIcon v-else
-          /></n-icon>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    style="
-      margin: 1rem 1.5rem;
-      background-color: var(--color-background-soft);
-      border-radius: var(--border-radius);
-    ">
-    <div style="padding: 0.8rem 1rem 0.5rem 1rem; border-bottom: 1px solid #fff1">
-      <span>Total Cash</span>
-      <h1 style="padding-bottom: 0.2rem">{{ formatMoney(player.money) }}</h1>
-    </div>
-
-    <div style="padding: 0.3rem 1rem 0.8rem 1rem">
-      <div class="nrow">
-        <div>Initial Value</div>
-        <div>{{ formatMoney(player.iMoney) }}</div>
-      </div>
-      <div class="nrow">
-        <div>Current Total Value</div>
-        <div>{{ formatMoney(player.money + totalValue) }}</div>
-      </div>
-      <div class="nrow">
-        <div>Profit/Loss</div>
-        <div
-          :style="{
-            color:
-              player.money + totalValue - player.iMoney < 0
-                ? 'var(--color-error)'
-                : 'var(--color-success)',
-            display: 'flex',
-            'align-items': 'center',
-          }">
-          {{ formatMoney(player.money + totalValue - player.iMoney, true) }}
-          <n-icon style="padding-left: 4px"
-            ><downIcon v-if="player.money + totalValue - player.iMoney < 0" /><upIcon v-else
           /></n-icon>
         </div>
       </div>
@@ -115,18 +84,25 @@
               }"></div>
             <h3>{{ holding.counter.name }}</h3>
           </div>
-          <div style="display: flex; flex-direction: column; align-items: flex-end">
-            <h3>{{ formatMoney(holding.counter.priceHistory[this.period] * holding.n, true) }}</h3>
-            <span
-              :style="{
-                color: calcChange(holding) < 0 ? 'var(--color-error)' : 'var(--color-success)',
-                display: 'flex',
-                'align-items': 'center',
-              }"
-              >{{ formatMoney(calcChange(holding), true) }}
-              <n-icon style="padding-left: 4px"
-                ><downIcon v-if="calcChange(holding) < 0" /><upIcon v-else /></n-icon
-            ></span>
+          <div style="display: flex; align-items: center">
+            <div style="display: flex; flex-direction: column; align-items: flex-end">
+              <h3>
+                {{ formatMoney(holding.counter.priceHistory[this.period] * holding.n, true) }}
+              </h3>
+              <span
+                :style="{
+                  color: calcChange(holding) < 0 ? 'var(--color-error)' : 'var(--color-success)',
+                  display: 'flex',
+                  'align-items': 'center',
+                }"
+                >{{ formatMoney(calcChange(holding), true) }}
+                <n-icon style="padding-left: 4px"
+                  ><downIcon v-if="calcChange(holding) < 0" /><upIcon v-else /></n-icon
+              ></span>
+            </div>
+            <h2 style="font-weight: 700; padding-left: 20px; padding-right: 10px">
+              {{ holding.n }}
+            </h2>
           </div>
         </div>
       </n-space>
@@ -244,7 +220,7 @@ export default {
     return {
       loading: true,
       player: {},
-      counters: [],
+      counters: {},
       chart: {},
     };
   },
@@ -274,12 +250,31 @@ export default {
     counterColors() {
       return this.holdings.map((h) => h.color);
     },
-    totalValue() {
+    stocksValue() {
       let sum = 0;
       for (const holding of this.holdings) {
         sum += holding.val;
       }
       return sum;
+    },
+    shortValue() {
+      if (Object.keys(this.counters).length == 0) {
+        return 0;
+      }
+      let sum = 0;
+      for (const counter in this.player.shortRecords) {
+        for (const cperiod in this.player.shortRecords[counter]) {
+          const t = this.player.shortRecords[counter][cperiod];
+          const count = t.nSold - t.nCovered;
+          const buyTotal = count * t.price;
+          const val = buyTotal - count * this.counters[counter].priceHistory[this.period];
+          sum += val;
+        }
+      }
+      return sum;
+    },
+    totalValue() {
+      return this.stocksValue + this.shortValue + this.player.money;
     },
     totalInvested() {
       if (!this.player.transactions) return 0;
@@ -296,7 +291,7 @@ export default {
       return bal;
     },
     totalDiff() {
-      return this.totalValue - this.totalInvested;
+      return this.totalValue - this.player.iMoney;
     },
   },
   methods: {

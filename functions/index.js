@@ -98,7 +98,7 @@ exports.advancePeriod = functions
       throw new functions.https.HttpsError('failed-precondition', 'classId and period required.');
     }
 
-    const taxRate = 0.02;
+    const taxRate = data.holdingCost / 100;
 
     const currentPeriod = Number(data.period);
 
@@ -106,37 +106,40 @@ exports.advancePeriod = functions
 
     const playersRef = db.collection('players');
     const playersSnapshot = await playersRef.where('classID', '==', data.classId).get();
-    playersSnapshot.forEach(async (doc) => {
-      const player = doc.data();
-      const shortRecords = player.shortRecords;
 
-      let totalTax = 0;
-      for (const counterId in shortRecords) {
-        for (const period in shortRecords[counterId]) {
-          if (currentPeriod - period <= 0) continue;
-          const shortRecord = shortRecords[counterId][period];
-          if (shortRecord.nCovered < shortRecord.nSold) {
-            const nToTax = shortRecord.nSold - shortRecord.nCovered;
-            const amtToTax = nToTax * shortRecord.price;
-            const tax = amtToTax * taxRate;
-            totalTax += tax;
+    if (data.shorting) {
+      playersSnapshot.forEach(async (doc) => {
+        const player = doc.data();
+        const shortRecords = player.shortRecords;
+
+        let totalTax = 0;
+        for (const counterId in shortRecords) {
+          for (const period in shortRecords[counterId]) {
+            if (currentPeriod - period <= 0) continue;
+            const shortRecord = shortRecords[counterId][period];
+            if (shortRecord.nCovered < shortRecord.nSold) {
+              const nToTax = shortRecord.nSold - shortRecord.nCovered;
+              const amtToTax = nToTax * shortRecord.price;
+              const tax = amtToTax * taxRate;
+              totalTax += tax;
+            }
           }
         }
-      }
 
-      if (totalTax == 0) return;
+        if (totalTax == 0) return;
 
-      player.transactions.push({
-        isStock: false,
-        label: 'Short holding cost',
-        price: totalTax,
-        period: currentPeriod,
-        nShares: 1,
+        player.transactions.push({
+          isStock: false,
+          label: 'Short holding cost',
+          price: totalTax,
+          period: currentPeriod,
+          nShares: 1,
+        });
+
+        const playerRef = db.collection('players').doc(doc.id);
+        await playerRef.update(player);
       });
-
-      const playerRef = db.collection('players').doc(doc.id);
-      await playerRef.update(player);
-    });
+    }
 
     const classRef = db.collection('classes').doc(data.classId);
     await classRef.update({

@@ -21,12 +21,13 @@
             <div
               v-for="player in players"
               :key="player.id"
-              style="
-                background-color: var(--color-background-mute);
-                padding: 0.5rem 1rem;
-                border-radius: var(--border-radius);
-                margin-bottom: 1rem;
-              ">
+              :style="{
+                'background-color':
+                  calcValue(player) < 0 ? 'var(--color-error)' : 'var(--color-background-mute)',
+                padding: '0.5rem 1rem',
+                'border-radius': 'var(--border-radius)',
+                'margin-bottom': '1rem',
+              }">
               <n-collapse>
                 <n-collapse-item name="1">
                   <template #header
@@ -45,6 +46,8 @@
                         <n-gi class="rcol">{{ calcShorts(player.shortRecords) }}</n-gi>
                         <n-gi class="lcol">Cash</n-gi>
                         <n-gi class="rcol">{{ formatMoney(player.money) }}</n-gi>
+                        <n-gi class="lcol">Total Value</n-gi>
+                        <n-gi class="rcol">{{ formatMoney(calcValue(player)) }}</n-gi>
                       </n-grid>
                     </div>
                   </template>
@@ -241,6 +244,29 @@ export default {
     },
   },
   methods: {
+    calcValue(player) {
+      if (Object.keys(this.counters).length == 0) {
+        return 0;
+      }
+      let stockValues = 0;
+      for (const holding in player.holdings) {
+        stockValues +=
+          player.holdings[holding] * this.counters[holding].priceHistory[this.classData.period];
+      }
+
+      let shortValue = 0;
+      for (const counter in player.shortRecords) {
+        for (const cperiod in player.shortRecords[counter]) {
+          const t = player.shortRecords[counter][cperiod];
+          const count = t.nSold - t.nCovered;
+          const buyTotal = count * t.price;
+          const val = buyTotal - this.counters[counter].priceHistory[this.classData.period];
+          shortValue += val;
+        }
+      }
+
+      return stockValues + shortValue + player.money;
+    },
     calcHoldings(data) {
       let count = 0;
       for (const holding in data) {
@@ -276,7 +302,12 @@ export default {
     async nextPeriod() {
       this.periodLoading = true;
       const advancePeriod = getFn('advancePeriod');
-      await advancePeriod({ classId: this.$route.params.id, period: this.classData.period });
+      await advancePeriod({
+        classId: this.$route.params.id,
+        period: this.classData.period,
+        holdingCost: this.classData.holdingCost,
+        shorting: this.classData.shortSelling,
+      });
       await this.fetchGame();
       this.periodLoading = false;
     },

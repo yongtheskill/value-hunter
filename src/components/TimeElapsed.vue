@@ -3,11 +3,17 @@
 </template>
 
 <script>
+import { useMessage } from 'naive-ui';
+
 export default {
+  setup() {
+    window.$message = useMessage();
+  },
   data() {
     return {
       timer: '',
       seconds: -1,
+      notified: false,
     };
   },
   computed: {
@@ -23,7 +29,19 @@ export default {
     updateSeconds() {
       const newSeconds = Math.floor(new Date().getTime() / 1000) - this.from.seconds;
       this.seconds = newSeconds > 0 ? newSeconds : 0;
-      if (this.autoAdvance && this.seconds >= this.autoTime && this.autoTime > 15) {
+      if (!this.autoAdvance) return;
+
+      if (this.notified && this.autoTime - this.seconds > 30) {
+        this.notified = false;
+        return;
+      }
+      if (!this.notified && this.autoTime - this.seconds < 30) {
+        this.notified = true;
+        window.$message.warning('About to auto-advance, increase period time if required', {
+          duration: 30000,
+        });
+      }
+      if (this.seconds >= this.autoTime && this.autoTime > 30) {
         this.nextPeriod();
       }
     },
