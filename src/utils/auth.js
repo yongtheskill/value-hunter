@@ -5,10 +5,19 @@ import {
 } from 'firebase/auth';
 import { auth } from '../main';
 import { v4 as uuidv4 } from 'uuid';
+import { useClassStore } from './classStore';
 
 var user = null;
 const registerAuthListener = () => {
-  const unsubscribe = onAuthStateChanged(auth, (u) => {
+  const unsubscribe = onAuthStateChanged(auth, async (u) => {
+    if (u == null) {
+      console.log(window.location.pathname);
+      if (window.location.pathname != '/') {
+        const c = useClassStore();
+        await c.clear();
+        window.location.href = '/';
+      }
+    }
     user = u;
   });
 };

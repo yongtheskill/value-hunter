@@ -30,6 +30,11 @@ export const useClassStore = defineStore('gclass', {
   },
   actions: {
     setData(classData) {
+      if (classData == undefined) {
+        this.classID = '';
+        window.location.href = '/';
+        return;
+      }
       this.period = classData.period;
       this.nextPeriod = classData.nextPeriod;
       this.initialBalance = classData.initialBalance;
@@ -68,11 +73,16 @@ export const useClassStore = defineStore('gclass', {
       }
       try {
         const gottenClass = await getDoc('classes', this.classID);
+        if (!gottenClass) {
+          this.clear();
+          return false;
+        }
         this.setData(gottenClass);
       } catch {
         this.classID = '';
         window.location.href = '/';
       }
+      return true;
     },
     listen(classID) {
       if (!!unsubscribe) {

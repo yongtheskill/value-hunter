@@ -627,7 +627,7 @@ export default {
 
 <style>
 .tcol {
-  width: 65px;
+  width: 80px;
 }
 .headerrow {
   height: 30px;

@@ -77,6 +77,7 @@ import { registerPlayer, isAdmin } from '@/utils/auth';
 import { mapState } from 'pinia';
 import { mapActions } from 'pinia';
 import { useClassStore } from '../utils/classStore';
+import { signOut } from '../utils/auth';
 const auth = getAuth();
 
 export default {
@@ -96,7 +97,7 @@ export default {
   },
   watch: {
     started(n) {
-      console.log('started: ', n);
+      console.log('aaa: ', n);
     },
     async code(n) {
       this.valid = false;
@@ -150,7 +151,7 @@ export default {
       this.loadingName = false;
     },
   },
-  beforeMount() {
+  async beforeMount() {
     const loadedCode = this.$route.query.c;
     if (loadedCode) {
       this.code = loadedCode;
@@ -161,8 +162,13 @@ export default {
       }
     });
     if (this.classID != undefined && this.classID.length == 4) {
-      this.load();
+      await this.load();
       this.listen();
+      if (this.started == undefined) {
+        await signOut();
+        this.clear();
+        return;
+      }
       if (!this.started) {
         this.$router.push('/p/i');
         return;

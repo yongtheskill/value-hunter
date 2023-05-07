@@ -119,6 +119,7 @@ import {
 import QrcodeVue from 'qrcode.vue';
 import { VueScreenSizeMixin } from 'vue-screen-size';
 import { ChevronDown as DownIcon, TrashBin as BinIcon } from '@vicons/ionicons5';
+import { getFn } from '../utils/functions';
 
 export default {
   components: { QrcodeVue, DownIcon, BinIcon },
@@ -135,6 +136,8 @@ export default {
       this.classData = await getDoc('classes', this.classID);
     },
     async deletePlayer(id) {
+      const deleteUser = getFn('deleteUser');
+      await deleteUser({ uid: id });
       deleteDoc('players', id);
     },
   },
