@@ -37,7 +37,7 @@
               <div>
                 <h3>Historical Data</h3>
                 <div style="display: flex">
-                  <n-grid :cols="6" :x-gap="12" style="padding-right: 12px">
+                  <n-grid :cols="7" :x-gap="12" style="padding-right: 12px">
                     <n-gi>
                       <h4 class="rowNumberLabel">Quarterly Revenue</h4>
                       <n-input-number
@@ -86,7 +86,17 @@
                         class="rowNumberInput"
                         v-for="(data, i) in historicalFinancials"
                         :default-value="data.debt"
-                        @update:value="(e) => financialChanged(e, 'debt', i, true)" /> </n-gi
+                        @update:value="(e) => financialChanged(e, 'debt', i, true)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Margin of Safety</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in historicalFinancials"
+                        :default-value="data.marginOfSafety"
+                        @update:value="
+                          (e) => financialChanged(e, 'marginOfSafety', i, true)
+                        " /> </n-gi
                   ></n-grid>
                   <div>
                     <h4 style="font-weight: 700">Price</h4>
@@ -108,7 +118,7 @@
                 </div>
                 <h3 style="margin-top: 1.4rem">Game Period Data</h3>
                 <div style="display: flex">
-                  <n-grid :cols="6" :x-gap="12" style="padding-right: 12px">
+                  <n-grid :cols="7" :x-gap="12" style="padding-right: 12px">
                     <n-gi>
                       <h4 class="rowNumberLabel">Quarterly Revenue</h4>
                       <n-input-number
@@ -157,7 +167,17 @@
                         class="rowNumberInput"
                         v-for="(data, i) in gameFinancials"
                         :default-value="data.debt"
-                        @update:value="(e) => financialChanged(e, 'debt', i, false)" /> </n-gi
+                        @update:value="(e) => financialChanged(e, 'debt', i, false)" />
+                    </n-gi>
+                    <n-gi>
+                      <h4 class="rowNumberLabel">Margin of Safety</h4>
+                      <n-input-number
+                        class="rowNumberInput"
+                        v-for="(data, i) in gameFinancials"
+                        :default-value="data.marginOfSafety"
+                        @update:value="
+                          (e) => financialChanged(e, 'marginOfSafety', i, false)
+                        " /> </n-gi
                   ></n-grid>
                   <div>
                     <h4 style="font-weight: 700">Price</h4>
@@ -246,7 +266,7 @@ export default {
       gFinancials.push(data);
     }
     hFinancials.sort((a, b) => a.period - b.period);
-    gFinancials.sort((a, b) => b.period - a.period);
+    gFinancials.sort((a, b) => a.period - b.period);
 
     this.historicalFinancials = hFinancials;
     this.gameFinancials = gFinancials;
@@ -305,12 +325,14 @@ export default {
               peRatio: 0,
               cash: 0,
               debt: 0,
+              marginOfSafety: 0,
             });
         }
         if (ld < 0) {
           for (let i = Math.abs(ld); i > 0; i--) this.historicalFinancials.pop();
         }
         this.syncData();
+        this.syncFinancials();
       },
       deep: true,
     },
@@ -326,12 +348,14 @@ export default {
               peRatio: 0,
               cash: 0,
               debt: 0,
+              marginOfSafety: 0,
             });
         }
         if (ld < 0) {
           for (let i = Math.abs(ld); i > 0; i--) this.gameFinancials.pop();
         }
         this.syncData();
+        this.syncFinancials();
       },
       deep: true,
     },

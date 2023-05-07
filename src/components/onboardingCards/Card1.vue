@@ -12,7 +12,7 @@
       ">
       <h1 :class="cl" style="line-height: normal">News!</h1>
       <h4 :class="cl" style="padding-top: 1rem">
-        Every in-game week, you will be presented with news articles.
+        Every in-game period, you will be presented with news articles.
       </h4>
       <h4 :class="cl" style="padding-top: 1rem">
         Read these articles, and predict how the market will react!

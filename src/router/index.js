@@ -4,13 +4,6 @@ import { checkAdmin } from '@/utils/auth';
 
 const adminPages = ['manage', 'manage classes'];
 
-const ensureUnauthed = async () => {
-  console.log('ensureUnauthed: ', await checkAuthed());
-  if (await checkAuthed()) {
-    return '/manage';
-  }
-};
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

@@ -49,12 +49,13 @@
         <div style="display: flex">
           <div style="width: 135px; flex-shrink: 0; display: inline-block" class="stripe">
             <div class="headerrow">Period</div>
-            <div class="headerrow">Quarterly Revenue</div>
-            <div class="headerrow">EBIT</div>
-            <div class="headerrow">Profit Margin</div>
-            <div class="headerrow">PE Ratio</div>
-            <div class="headerrow">Cash</div>
-            <div class="headerrow">Debt</div>
+            <div class="headerrow" v-if="quarterlyRevenueEnabled">Quarterly Revenue</div>
+            <div class="headerrow" v-if="ebitEnabled">EBIT</div>
+            <div class="headerrow" v-if="profitMarginEnabled">Profit Margin</div>
+            <div class="headerrow" v-if="peRatioEnabled">PE Ratio</div>
+            <div class="headerrow" v-if="cashEnabled">Cash</div>
+            <div class="headerrow" v-if="debtEnabled">Debt</div>
+            <div class="headerrow" v-if="marginOfSafetyEnabled">Margin of Safety</div>
           </div>
           <div style="overflow-x: auto; display: inline-block">
             <div class="scrollContainer">
@@ -62,13 +63,20 @@
                 class="tcol stripe"
                 v-for="periodFinancial in financials"
                 :key="periodFinancial.period">
-                <div class="trow">{{ periodFinancial.period }}</div>
-                <div class="trow">{{ periodFinancial.quarterlyRevenue }}</div>
-                <div class="trow">{{ periodFinancial.ebit }}</div>
-                <div class="trow">{{ periodFinancial.profitMargin }}%</div>
-                <div class="trow">{{ periodFinancial.peRatio }}</div>
-                <div class="trow">{{ periodFinancial.cash }}</div>
-                <div class="trow">{{ periodFinancial.debt }}</div>
+                <div class="trow">{{ periodFinancial.period + 1 }}</div>
+                <div class="trow" v-if="quarterlyRevenueEnabled">
+                  {{ periodFinancial.quarterlyRevenue }}
+                </div>
+                <div class="trow" v-if="ebitEnabled">{{ periodFinancial.ebit }}</div>
+                <div class="trow" v-if="profitMarginEnabled">
+                  {{ periodFinancial.profitMargin }}%
+                </div>
+                <div class="trow" v-if="peRatioEnabled">{{ periodFinancial.peRatio }}</div>
+                <div class="trow" v-if="cashEnabled">{{ periodFinancial.cash }}</div>
+                <div class="trow" v-if="debtEnabled">{{ periodFinancial.debt }}</div>
+                <div class="trow" v-if="marginOfSafetyEnabled">
+                  {{ periodFinancial.marginOfSafety }}
+                </div>
               </div>
             </div>
           </div>
@@ -293,8 +301,7 @@ export default {
       for (let i = 0; i < keys.length; i++) {
         keys[i] = Number(keys[i]);
       }
-      keys.sort();
-      console.log(keys);
+      keys.sort((a, b) => Number(a) - Number(b));
       const final = [];
       for (const key of keys) {
         const data = this.counter.financials[key.toString()];
@@ -592,7 +599,19 @@ export default {
       },
     });
   },
-  props: ['counter', 'period', 'doShort', 'close'],
+  props: [
+    'counter',
+    'period',
+    'doShort',
+    'close',
+    'quarterlyRevenueEnabled',
+    'ebitEnabled',
+    'profitMarginEnabled',
+    'peRatioEnabled',
+    'cashEnabled',
+    'debtEnabled',
+    'marginOfSafetyEnabled',
+  ],
   components: {
     infoIcon,
     backIcon,

@@ -18,7 +18,16 @@
           <news :period="period"
         /></n-tab-pane>
         <n-tab-pane class="tabPane" name="2" :tab="tradeTabVnode">
-          <trade :periodString="period" :doShort="shortSelling" />
+          <trade
+            :periodString="period"
+            :doShort="shortSelling"
+            :quarterlyRevenueEnabled="quarterlyRevenueEnabled"
+            :ebitEnabled="ebitEnabled"
+            :profitMarginEnabled="profitMarginEnabled"
+            :peRatioEnabled="peRatioEnabled"
+            :cashEnabled="cashEnabled"
+            :debtEnabled="debtEnabled"
+            :marginOfSafetyEnabled="marginOfSafetyEnabled" />
         </n-tab-pane>
         <n-tab-pane class="tabPane" name="3" :tab="portfolioTabVnode">
           <portfolio :period="period"
@@ -26,7 +35,7 @@
       </n-tabs>
       <div class="periodTitleBacking"></div>
       <div class="periodTitle">
-        <h1>Week {{ period + 1 }}</h1>
+        <h1>Period {{ period + 1 }}</h1>
         <h3 class="subtitle">Get ready to trade!</h3>
       </div>
     </div>
@@ -90,7 +99,20 @@ export default {
     };
   },
   computed: {
-    ...mapState(useClassStore, ['started', 'period', 'shortSelling', 'nPeriods']),
+    ...mapState(useClassStore, [
+      'started',
+      'period',
+      'shortSelling',
+      'nPeriods',
+
+      'quarterlyRevenueEnabled',
+      'ebitEnabled',
+      'profitMarginEnabled',
+      'peRatioEnabled',
+      'cashEnabled',
+      'debtEnabled',
+      'marginOfSafetyEnabled',
+    ]),
   },
   methods: {
     ...mapActions(useClassStore, ['listen', 'load']),
@@ -99,17 +121,17 @@ export default {
       animate(
         '.periodTitleBacking',
         { opacity: [1, 1, 0, 0], 'pointer-events': ['auto', 'auto', 'none', 'none'] },
-        { duration: 0.1, offset: [0, 0.9, 0.91] }
-        //{ duration: 7 /*0.1*/, offset: [0, 0.9, 0.91] },
+        //{ duration: 0.1, offset: [0, 0.9, 0.91] }
+        { duration: 7 /*0.1*/, offset: [0, 0.9, 0.91] }
       );
       animate(
         '.periodTitle',
         { opacity: [0, 1, 1, 0] },
-        { duration: 0.1, offset: [0, 0.01, 0.95] }
-        //{ duration: /*0.1*/ 7, offset: [0, 0.01, 0.95] },
+        //{ duration: 0.1, offset: [0, 0.01, 0.95] }
+        { duration: /*0.1*/ 7, offset: [0, 0.01, 0.95] }
       );
-      animate('.subtitle', { opacity: [0, 1] }, { duration: 0.1, delay: 0 });
-      //animate('.subtitle', { opacity: [0, 1] }, { duration: 0.8 /*0.1*/, delay: /*0*/ 0.8 });
+      //animate('.subtitle', { opacity: [0, 1] }, { duration: 0.1, delay: 0 });
+      animate('.subtitle', { opacity: [0, 1] }, { duration: 0.8 /*0.1*/, delay: /*0*/ 0.8 });
     },
   },
   mounted() {

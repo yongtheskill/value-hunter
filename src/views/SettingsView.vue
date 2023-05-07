@@ -51,13 +51,78 @@
       <template #suffix> % </template></n-input-number
     >
     <div style="width: 100%; display: flex; align-items: flex-start">
-      <span style="padding-left: 0.3rem; margin-right: 1rem">Short Selling</span>
       <n-switch
         :loading="!dataLoaded"
         :disabled="!dataLoaded"
         v-model:value="shortSelling"
         size="large" />
+      <span style="padding-left: 0.3rem; margin-left: 0.5rem">Short Selling</span>
     </div>
+    <h3 style="padding-top: 0.8rem; padding-bottom: 0.3rem">Financials</h3>
+    <n-space vertical>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :loading="!dataLoaded"
+          :disabled="!dataLoaded"
+          v-model:value="quarterlyRevenueEnabled"
+          size="large" />
+        <span style="padding-left: 0.3rem; margin-left: 0.5rem; padding-top: 0.1rem"
+          >Quarterly Revenue</span
+        >
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :loading="!dataLoaded"
+          :disabled="!dataLoaded"
+          v-model:value="ebitEnabled"
+          size="large" />
+        <span style="padding-left: 0.3rem; margin-left: 0.5rem; padding-top: 0.1rem">EBIT</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :loading="!dataLoaded"
+          :disabled="!dataLoaded"
+          v-model:value="profitMarginEnabled"
+          size="large" />
+        <span style="padding-left: 0.3rem; margin-left: 0.5rem; padding-top: 0.1rem"
+          >Profit Margin</span
+        >
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :loading="!dataLoaded"
+          :disabled="!dataLoaded"
+          v-model:value="peRatioEnabled"
+          size="large" />
+        <span style="padding-left: 0.3rem; margin-left: 0.5rem; padding-top: 0.1rem">PE Ratio</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :loading="!dataLoaded"
+          :disabled="!dataLoaded"
+          v-model:value="cashEnabled"
+          size="large" />
+        <span style="padding-left: 0.3rem; margin-left: 0.5rem; padding-top: 0.1rem">Cash</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :loading="!dataLoaded"
+          :disabled="!dataLoaded"
+          v-model:value="debtEnabled"
+          size="large" />
+        <span style="padding-left: 0.3rem; margin-left: 0.5rem; padding-top: 0.1rem">Debt</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :loading="!dataLoaded"
+          :disabled="!dataLoaded"
+          v-model:value="marginOfSafetyEnabled"
+          size="large" />
+        <span style="padding-left: 0.3rem; margin-left: 0.5rem; padding-top: 0.1rem"
+          >Margin of Safety</span
+        >
+      </div>
+    </n-space>
   </div>
 
   <h1 style="padding-top: 2.5rem">Game Data</h1>
@@ -116,6 +181,13 @@ export default {
       nPeriods: 8,
       initialBalance: 5000,
       shortSelling: false,
+      quarterlyRevenueEnabled: true,
+      ebitEnabled: true,
+      profitMarginEnabled: true,
+      peRatioEnabled: true,
+      cashEnabled: true,
+      debtEnabled: true,
+      marginOfSafetyEnabled: true,
       counters: [],
       historicalData: [],
       gameData: [],
@@ -134,6 +206,27 @@ export default {
     },
     shortSelling(n) {
       updateDoc('settings', '0', { shortSelling: this.shortSelling });
+    },
+    quarterlyRevenueEnabled(n) {
+      updateDoc('settings', '0', { quarterlyRevenueEnabled: this.quarterlyRevenueEnabled });
+    },
+    ebitEnabled(n) {
+      updateDoc('settings', '0', { ebitEnabled: this.ebitEnabled });
+    },
+    profitMarginEnabled(n) {
+      updateDoc('settings', '0', { profitMarginEnabled: this.profitMarginEnabled });
+    },
+    peRatioEnabled(n) {
+      updateDoc('settings', '0', { peRatioEnabled: this.peRatioEnabled });
+    },
+    cashEnabled(n) {
+      updateDoc('settings', '0', { cashEnabled: this.cashEnabled });
+    },
+    debtEnabled(n) {
+      updateDoc('settings', '0', { debtEnabled: this.debtEnabled });
+    },
+    marginOfSafetyEnabled(n) {
+      updateDoc('settings', '0', { marginOfSafetyEnabled: this.marginOfSafetyEnabled });
     },
     holdingCost(n) {
       updateDoc('settings', '0', { holdingCost: this.holdingCost });
@@ -212,6 +305,13 @@ export default {
       this.nPeriods = settings.nPeriods;
       this.initialBalance = settings.initialBalance;
       this.shortSelling = settings.shortSelling;
+      this.quarterlyRevenueEnabled = settings.quarterlyRevenueEnabled;
+      this.ebitEnabled = settings.ebitEnabled;
+      this.profitMarginEnabled = settings.profitMarginEnabled;
+      this.peRatioEnabled = settings.peRatioEnabled;
+      this.cashEnabled = settings.cashEnabled;
+      this.debtEnabled = settings.debtEnabled;
+      this.marginOfSafetyEnabled = settings.marginOfSafetyEnabled;
       this.holdingCost = settings.holdingCost;
       this.dataLoaded = true;
     },
@@ -231,6 +331,7 @@ export default {
         name: '',
         stockSymbol: '',
         priceHistory: [],
+        financials: [],
         created: serverTimestamp(),
       });
       await this.loadCounters();

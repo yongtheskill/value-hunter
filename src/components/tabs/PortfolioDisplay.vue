@@ -186,7 +186,7 @@
         </div>
         <div class="nrow">
           <div>Order Date</div>
-          <div>Week {{ transaction.period + 1 }}</div>
+          <div>Period {{ transaction.period + 1 }}</div>
         </div>
       </div>
       <div v-else>
@@ -196,7 +196,7 @@
         </div>
         <div class="nrow">
           <div>Date</div>
-          <div>Week {{ transaction.period + 1 }}</div>
+          <div>Period {{ transaction.period + 1 }}</div>
         </div>
       </div>
     </div>

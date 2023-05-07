@@ -126,9 +126,49 @@
         <template #suffix> % </template></n-input-number
       >
       <div style="width: 100%; display: flex; align-items: flex-start">
-        <span style="margin-left: 0.9rem; margin-right: 1rem">Short Selling</span>
         <n-switch :disabled="loadCreate" v-model:value="editClassShortSelling" size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">Short Selling</span>
       </div>
+      <h2 style="padding-top: 1rem; padding-bottom: 0.4rem">Financials</h2>
+      <n-space vertical style="width: 100%">
+        <div style="width: 100%; display: flex; align-items: flex-start">
+          <n-switch
+            :disabled="loadCreate"
+            v-model:value="editClassquarterlyRevenueEnabled"
+            size="large" />
+          <span style="margin-left: 0.9rem; margin-top: 0.15rem">Quarterly Revenue</span>
+        </div>
+        <div style="width: 100%; display: flex; align-items: flex-start">
+          <n-switch :disabled="loadCreate" v-model:value="editClassebitEnabled" size="large" />
+          <span style="margin-left: 0.9rem; margin-top: 0.15rem">EBIT</span>
+        </div>
+        <div style="width: 100%; display: flex; align-items: flex-start">
+          <n-switch
+            :disabled="loadCreate"
+            v-model:value="editClassprofitMarginEnabled"
+            size="large" />
+          <span style="margin-left: 0.9rem; margin-top: 0.15rem">Profit Margin</span>
+        </div>
+        <div style="width: 100%; display: flex; align-items: flex-start">
+          <n-switch :disabled="loadCreate" v-model:value="editClasspeRatioEnabled" size="large" />
+          <span style="margin-left: 0.9rem; margin-top: 0.15rem">PE Ratio</span>
+        </div>
+        <div style="width: 100%; display: flex; align-items: flex-start">
+          <n-switch :disabled="loadCreate" v-model:value="editClasscashEnabled" size="large" />
+          <span style="margin-left: 0.9rem; margin-top: 0.15rem">Cash</span>
+        </div>
+        <div style="width: 100%; display: flex; align-items: flex-start">
+          <n-switch :disabled="loadCreate" v-model:value="editClassdebtEnabled" size="large" />
+          <span style="margin-left: 0.9rem; margin-top: 0.15rem">Debt</span>
+        </div>
+        <div style="width: 100%; display: flex; align-items: flex-start">
+          <n-switch
+            :disabled="loadCreate"
+            v-model:value="editClassmarginOfSafetyEnabled"
+            size="large" />
+          <span style="margin-left: 0.9rem; margin-top: 0.15rem">Margin of Safety</span>
+        </div>
+      </n-space>
       <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 1rem">
         <n-button
           type="success"
@@ -180,6 +220,14 @@ export default {
     this.editClassNPeriods = this.classData.nPeriods;
     this.editClassInitialBalance = this.classData.initialBalance;
     this.editClassShortSelling = this.classData.shortSelling;
+
+    this.editClassquarterlyRevenueEnabled = this.classData.quarterlyRevenueEnabled;
+    this.editClassebitEnabled = this.classData.ebitEnabled;
+    this.editClassprofitMarginEnabled = this.classData.profitMarginEnabled;
+    this.editClasspeRatioEnabled = this.classData.peRatioEnabled;
+    this.editClasscashEnabled = this.classData.cashEnabled;
+    this.editClassdebtEnabled = this.classData.debtEnabled;
+    this.editClassmarginOfSafetyEnabled = this.classData.marginOfSafetyEnabled;
     this.editClassHoldingCost = this.classData.holdingCost;
   },
   data() {
@@ -189,6 +237,13 @@ export default {
       editClassNPeriods: 8,
       editClassInitialBalance: 5000,
       editClassShortSelling: false,
+      editClassquarterlyRevenueEnabled: false,
+      editClassebitEnabled: false,
+      editClassprofitMarginEnabled: false,
+      editClasspeRatioEnabled: false,
+      editClasscashEnabled: false,
+      editClassdebtEnabled: false,
+      editClassmarginOfSafetyEnabled: false,
       editClassHoldingCost: 2,
       validateEditClassName: false,
       validateEditClassNPeriods: false,
@@ -239,6 +294,13 @@ export default {
           nPeriods: this.editClassNPeriods,
           initialBalance: this.editClassInitialBalance,
           shortSelling: this.editClassShortSelling,
+          quarterlyRevenueEnabled: this.editClassquarterlyRevenueEnabled,
+          ebitEnabled: this.editClassebitEnabled,
+          profitMarginEnabled: this.editClassprofitMarginEnabled,
+          peRatioEnabled: this.editClasspeRatioEnabled,
+          cashEnabled: this.editClasscashEnabled,
+          debtEnabled: this.editClassdebtEnabled,
+          marginOfSafetyEnabled: this.editClassmarginOfSafetyEnabled,
           holdingCost: this.editClassHoldingCost,
         });
         this.loadCreate = false;
@@ -268,6 +330,7 @@ export default {
       await deleteUsers({ uids: playerIds });
 
       this.refetch();
+      this.loading = false;
     },
   },
   setup() {

@@ -14,6 +14,13 @@ export const useClassStore = defineStore('gclass', {
       name: '',
       shortSelling: false,
       started: false,
+      quarterlyRevenueEnabled: false,
+      ebitEnabled: false,
+      profitMarginEnabled: false,
+      peRatioEnabled: false,
+      cashEnabled: false,
+      debtEnabled: false,
+      marginOfSafetyEnabled: false,
     };
   },
   getters: {
@@ -30,6 +37,13 @@ export const useClassStore = defineStore('gclass', {
       this.name = classData.name;
       this.shortSelling = classData.shortSelling;
       this.started = classData.started;
+      this.quarterlyRevenueEnabled = classData.quarterlyRevenueEnabled;
+      this.ebitEnabled = classData.ebitEnabled;
+      this.profitMarginEnabled = classData.profitMarginEnabled;
+      this.peRatioEnabled = classData.peRatioEnabled;
+      this.cashEnabled = classData.cashEnabled;
+      this.debtEnabled = classData.debtEnabled;
+      this.marginOfSafetyEnabled = classData.marginOfSafetyEnabled;
     },
     clear() {
       this.classID = '';
@@ -40,6 +54,13 @@ export const useClassStore = defineStore('gclass', {
       this.name = '';
       this.shortSelling = false;
       this.started = false;
+      this.quarterlyRevenueEnabled = false;
+      this.ebitEnabled = false;
+      this.profitMarginEnabled = false;
+      this.peRatioEnabled = false;
+      this.cashEnabled = false;
+      this.debtEnabled = false;
+      this.marginOfSafetyEnabled = false;
     },
     async load(classID) {
       if (!!classID) {

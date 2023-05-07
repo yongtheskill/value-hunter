@@ -109,7 +109,14 @@
       :counter="transactingCounter"
       :period="period"
       :close="closeTransaction"
-      :doShort="doShort" />
+      :doShort="doShort"
+      :quarterlyRevenueEnabled="quarterlyRevenueEnabled"
+      :ebitEnabled="ebitEnabled"
+      :profitMarginEnabled="profitMarginEnabled"
+      :peRatioEnabled="peRatioEnabled"
+      :cashEnabled="cashEnabled"
+      :debtEnabled="debtEnabled"
+      :marginOfSafetyEnabled="marginOfSafetyEnabled" />
   </div>
 </template>
 
@@ -134,7 +141,17 @@ export default {
       transactingCounter: {},
     };
   },
-  props: ['periodString', 'doShort'],
+  props: [
+    'periodString',
+    'doShort',
+    'quarterlyRevenueEnabled',
+    'ebitEnabled',
+    'profitMarginEnabled',
+    'peRatioEnabled',
+    'cashEnabled',
+    'debtEnabled',
+    'marginOfSafetyEnabled',
+  ],
   async beforeMount() {
     this.loadCounters();
   },

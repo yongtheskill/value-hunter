@@ -92,9 +92,47 @@
       <template #suffix> % </template></n-input-number
     >
     <div style="width: 100%; display: flex; align-items: flex-start">
-      <span style="margin-left: 0.9rem; margin-right: 1rem">Short Selling</span>
       <n-switch :disabled="loadCreate" v-model:value="newClassShortSelling" size="large" />
+      <span style="margin-left: 0.9rem; margin-top: 0.15rem">Short Selling</span>
     </div>
+    <h2 style="padding-top: 1rem; padding-bottom: 0.4rem">Financials</h2>
+    <n-space vertical style="width: 100%">
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :disabled="loadCreate"
+          v-model:value="newClassquarterlyRevenueEnabled"
+          size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">Quarterly Revenue</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch :disabled="loadCreate" v-model:value="newClassebitEnabled" size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">EBIT</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch :disabled="loadCreate" v-model:value="newClassprofitMarginEnabled" size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">Profit Margin</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch :disabled="loadCreate" v-model:value="newClasspeRatioEnabled" size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">PE Ratio</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch :disabled="loadCreate" v-model:value="newClasscashEnabled" size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">Cash</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch :disabled="loadCreate" v-model:value="newClassdebtEnabled" size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">Debt</span>
+      </div>
+      <div style="width: 100%; display: flex; align-items: flex-start">
+        <n-switch
+          :disabled="loadCreate"
+          v-model:value="newClassmarginOfSafetyEnabled"
+          size="large" />
+        <span style="margin-left: 0.9rem; margin-top: 0.15rem">Margin of Safety</span>
+      </div>
+    </n-space>
+
     <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 1rem">
       <n-button secondary type="error" @click="newClassOpen = false">
         <template #icon>
@@ -153,6 +191,13 @@ export default {
       newClassNPeriods: 8,
       newClassInitialBalance: 5000,
       newClassShortSelling: false,
+      newClassquarterlyRevenueEnabled: false,
+      newClassebitEnabled: false,
+      newClassprofitMarginEnabled: false,
+      newClasspeRatioEnabled: false,
+      newClasscashEnabled: false,
+      newClassdebtEnabled: false,
+      newClassmarginOfSafetyEnabled: false,
       newClassHoldingCost: 2,
       validateNewClassName: false,
       validateNewClassNPeriods: false,
@@ -197,6 +242,13 @@ export default {
           nPeriods: this.newClassNPeriods,
           initialBalance: this.newClassInitialBalance,
           shortSelling: this.newClassShortSelling,
+          quarterlyRevenueEnabled: this.newClassquarterlyRevenueEnabled,
+          ebitEnabled: this.newClassebitEnabled,
+          profitMarginEnabled: this.newClassprofitMarginEnabled,
+          peRatioEnabled: this.newClasspeRatioEnabled,
+          cashEnabled: this.newClasscashEnabled,
+          debtEnabled: this.newClassdebtEnabled,
+          marginOfSafetyEnabled: this.newClassmarginOfSafetyEnabled,
           created: serverTimestamp(),
           nextPeriod: serverTimestamp(),
           started: false,
@@ -220,6 +272,13 @@ export default {
       this.newClassNPeriods = settings.nPeriods;
       this.newClassInitialBalance = settings.initialBalance;
       this.newClassShortSelling = settings.shortSelling;
+      this.newClassquarterlyRevenueEnabled = settings.quarterlyRevenueEnabled;
+      this.newClassebitEnabled = settings.ebitEnabled;
+      this.newClassprofitMarginEnabled = settings.profitMarginEnabled;
+      this.newClasspeRatioEnabled = settings.peRatioEnabled;
+      this.newClasscashEnabled = settings.cashEnabled;
+      this.newClassdebtEnabled = settings.debtEnabled;
+      this.newClassmarginOfSafetyEnabled = settings.marginOfSafetyEnabled;
       this.newClassHoldingCost = settings.holdingCost;
       this.validateNewClassName = false;
       this.validateNewClassNPeriods = false;

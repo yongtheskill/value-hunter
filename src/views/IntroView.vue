@@ -4,51 +4,60 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       height: 100vh;
       width: 100vw;
-      overflow: hidden;
     ">
-    <div class="slideCardContainer">
-      <Transition :name="inc ? 'hslidel' : 'hslider'">
-        <div v-if="card == 0"><card0 v-model:shown="shown[0]" n="0" /></div>
-        <div v-else-if="card == 1"><card1 v-model:shown="shown[1]" n="1" /></div>
-        <div v-else-if="card == 2"><card2 v-model:shown="shown[2]" n="2" /></div>
-        <div v-else-if="card == 3"><card3 v-model:shown="shown[3]" n="3" /></div>
-      </Transition>
-    </div>
     <div
       style="
-        height: 70px;
-        padding-top: 25px;
-        width: 100vw;
+        width: min(500px, 100vw);
         display: flex;
+        justify-content: center;
         align-items: center;
-        justify-content: space-around;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
       ">
-      <n-button
-        @click="
-          inc = false;
-          card -= 1;
-        "
-        type="tertiary"
-        size="large"
-        :disabled="card <= 0"
-        >Back<template #icon
-          ><n-icon><back-arrow /></n-icon> </template></n-button
-      ><n-button
-        icon-placement="right"
-        @click="
-          inc = true;
-          card += 1;
-        "
-        type="success"
-        size="large"
-        :disabled="card >= 3"
-        >Next
-        <template #icon
-          ><n-icon><forward-arrow /></n-icon> </template
-      ></n-button>
+      <div class="slideCardContainer">
+        <Transition :name="inc ? 'hslidel' : 'hslider'">
+          <div v-if="card == 0"><card0 v-model:shown="shown[0]" n="0" /></div>
+          <div v-else-if="card == 1"><card1 v-model:shown="shown[1]" n="1" /></div>
+          <div v-else-if="card == 2"><card2 v-model:shown="shown[2]" n="2" /></div>
+          <div v-else-if="card == 3"><card3 v-model:shown="shown[3]" n="3" /></div>
+        </Transition>
+      </div>
+      <div
+        style="
+          height: 70px;
+          padding-top: 25px;
+          width: min(500px, 100vw);
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+        ">
+        <n-button
+          @click="
+            inc = false;
+            card -= 1;
+          "
+          type="tertiary"
+          size="large"
+          :disabled="card <= 0"
+          >Back<template #icon
+            ><n-icon><back-arrow /></n-icon> </template></n-button
+        ><n-button
+          icon-placement="right"
+          @click="
+            inc = true;
+            card += 1;
+          "
+          type="success"
+          size="large"
+          :disabled="card >= 3"
+          >Next
+          <template #icon
+            ><n-icon><forward-arrow /></n-icon> </template
+        ></n-button>
+      </div>
     </div>
   </main>
 </template>
@@ -105,11 +114,11 @@ export default {
 
 <style>
 .slideCardContainer {
-  width: calc(100vw - 50px);
+  width: calc(min(500px, 100vw) - 50px);
   height: calc(100vh - 120px);
 }
 .slideCard {
-  width: calc(100vw - 50px);
+  width: calc(min(500px, 100vw) - 50px);
   height: calc(100vh - 120px);
   background-color: var(--color-background-mute);
   position: absolute;
@@ -126,7 +135,7 @@ export default {
 }
 
 .hslider-enter-from {
-  right: 100vw;
+  right: min(500px, 100vw);
 }
 .hslider-enter-to {
   right: 0;
@@ -135,10 +144,10 @@ export default {
   left: 0;
 }
 .hslider-leave-to {
-  left: 100vw;
+  left: min(500px, 100vw);
 }
 .hslidel-enter-from {
-  left: 100vw;
+  left: min(500px, 100vw);
 }
 .hslidel-enter-to {
   left: 0;
@@ -147,6 +156,6 @@ export default {
   right: 0;
 }
 .hslidel-leave-to {
-  right: 100vw;
+  right: min(500px, 100vw);
 }
 </style>

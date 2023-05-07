@@ -79,7 +79,7 @@ exports.listAdmins = functions
     const userList = await getAuth().listUsers();
     const admins = [];
     userList.users.forEach((r) => {
-      if (r.customClaims.admin) admins.push(r);
+      if (r.customClaims && r.customClaims.admin) admins.push(r);
     });
     return admins;
   });
