@@ -11,8 +11,11 @@ var user = null;
 const registerAuthListener = () => {
   const unsubscribe = onAuthStateChanged(auth, async (u) => {
     if (u == null) {
-      console.log(window.location.pathname);
-      if (window.location.pathname != '/') {
+      if (
+        window.location.pathname != '/' &&
+        !window.location.pathname.contains('/login') &&
+        !window.location.pathname.contains('/manage')
+      ) {
         const c = useClassStore();
         await c.clear();
         window.location.href = '/';
